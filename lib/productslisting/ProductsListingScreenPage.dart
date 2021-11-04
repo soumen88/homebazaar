@@ -14,132 +14,126 @@ import 'dart:developer' as developer;
 
 import 'package:rflutter_alert/rflutter_alert.dart';
 
+import 'MyRadioOption.dart';
 
-class ProductsListingScreenPage extends ConsumerWidget{
-  ProductsListingScreenPage({Key? key}) : super(key: key);
+
+class ProductsListingScreenPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return ProductListingState();
+  }
+}
+
+class ProductListingState extends State<ProductsListingScreenPage>{
   int counter = 0;
-  String currentScreen = "ProductListingScreenPage";
-  ProductListingNotifierBloc productListingNotifierBloc = new ProductListingNotifierBloc();
+  String? _groupValue = "1";
 
-  //StreamController<String>? streamController;
-  StreamSubscription? subscription;
+  ValueChanged<String?> _valueChangedHandler() {
+    return (value) => setState(() {
+      developer.log(currentScreen , name : "Value changed to $value");
+      context.read(productListProvider.notifier).filterProducts();
+      _groupValue = value!;
+    });
+  }
 
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
-    final futureProducts = watch(productListProvider);
-
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(AppConfig.PRODUCT_LISTING),),
-      body: Center(
-        child: Column(
-          children: [
-            futureProducts.when(
-                data: (data) {
-                  counter++;
-                  //streamController = new StreamController();
-                  getDataStream(context);
-                  return handleReponse(data, context);
+      appBar: AppBar(
+        title: Text("Product Listing here"),
+      ),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Consumer(
+                builder: (context, watch, child) {
+                  final futureProducts = watch(productListProvider);
+                  return Container(
+                    child: futureProducts.when(
+                        data: (data) {
+                          counter++;
+                          //streamController = new StreamController();
+                          return handleReponse(data, context);
+                        },
+                        loading: () => CircularProgressIndicator(),
+                        error: (e, st) =>  Text("Something went wrong")
+                    ),
+                  );
                 },
-                loading: () => CircularProgressIndicator(),
-                error: (e, st) =>  Text("Something went wrong")
+              ),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+
+        shape: CircularNotchedRectangle(),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            MyRadioOption<String>(
+              value: '1',
+              groupValue: _groupValue,
+              onChanged: _valueChangedHandler(),
+              label: '1',
+              text: 'Low to High',
             ),
-            ElevatedButton(onPressed: (){
-              context.read(productListProvider.notifier).testingStreams();
-              _openPopup(context);
-              //streamController!.add("This a test data 3");
-              //context.read(productListProvider.notifier).filterProducts();
-                //_productListingNotifierBloc.doubleProducts();
-              }, child: Text("Double Products")
+            MyRadioOption<String>(
+              value: '2',
+              groupValue: _groupValue,
+              onChanged: _valueChangedHandler(),
+              label: '2',
+              text: 'High To Low',
             ),
+
           ],
         ),
+        color: Color.fromARGB(255, 238,106,41),
       ),
     );
   }
 
-  void getDataStream(BuildContext context){
-
-    subscription = context.read(productListProvider.notifier).streamController.stream.listen((data) {
-      developer.log(currentScreen , name : "DataReceived: " + data);
-
-      // Add 5 seconds delay
-      // It will call onPause function passed on StreamController constructor
-      //subscription!.pause(Future.delayed(const Duration(seconds: 5)));
-    }, onDone: () {
-      developer.log(currentScreen , name : "Task Done");
-    }, onError: (error) {
-      developer.log(currentScreen , name : "Some Error");
-    });
-  }
-
-  _openPopup(context) {
-    Alert(
-        context: context,
-        title: "LOGIN",
-        content: Column(
-          children: <Widget>[
-            TextField(
-              decoration: InputDecoration(
-                icon: Icon(Icons.account_circle),
-                labelText: 'Username',
-              ),
-            ),
-            TextField(
-              obscureText: true,
-              decoration: InputDecoration(
-                icon: Icon(Icons.lock),
-                labelText: 'Password',
-              ),
-            ),
-          ],
-        ),
-        buttons: [
-          DialogButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              "LOGIN",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-          )
-        ]).show();
-  }
 
   Widget handleReponse(List<Products>? list, BuildContext context){
     return list == null ?
-         Center(
-            child: CircularProgressIndicator(),
-         )
-        : Column(
-            children: [
-              Text("Product Listing will be done here ${list.length} with counter ${counter}"),
-              Container(
-                height: 500,
-                child: ListView.builder(
-                  itemCount: list.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    Products currentProduct = list[index];
-                    return ListTile(
-                      title: Text(currentProduct.title ?? "Empty Product Description"),
-                      leading: IconButton(
-                        icon: Icon(Icons.edit),
-                        // 3
-                        onPressed: () {
-                          context.router.push(SingleProductScreenRoute(selectedProduct: 5));
-                        },
-                      ),
-                      trailing: IconButton(
-                        icon: Icon(Icons.delete),
-                        // 3
-                        onPressed: () {
-                          context.router.navigate(FilterProductsScreenRoute());
-                        },
-                      ),
-                    );
-                  },
-                ),
+    Center(
+      child: CircularProgressIndicator(),
+    )
+        :
+    Column(
+      children: [
+        Text("Product Listing will be done here ${list.length} with counter ${counter}"),
+        ListView.builder(
+          shrinkWrap: true,
+          scrollDirection: Axis.vertical,
+          itemCount: list.length,
+          itemBuilder: (BuildContext context, int index) {
+            Products currentProduct = list[index];
+            return ListTile(
+              title: Text(currentProduct.title ?? "Empty Product Description"),
+              leading: IconButton(
+                icon: Icon(Icons.edit),
+                // 3
+                onPressed: () {
+                  context.router.push(SingleProductScreenRoute(selectedProduct: 5));
+                },
               ),
-            ],
-        );
+              trailing: IconButton(
+                icon: Icon(Icons.delete),
+                // 3
+                onPressed: () {
+                  context.router.navigate(FilterProductsScreenRoute());
+                },
+              ),
+            );
+          },
+        ),
+      ],
+    );
   }
 
 
