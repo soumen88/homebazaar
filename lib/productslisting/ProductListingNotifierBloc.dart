@@ -17,6 +17,9 @@ class ProductListingNotifierBloc extends StateNotifier<AsyncValue<List<Products>
   StreamController<String>? _streamController;
   StreamController<String> get streamController => _streamController!;
   List<Products> get receivedProductsFromApi => receivedProducts;
+
+  List<Products> cartProducts = [];
+  List<Products> get getProductsFromCart => cartProducts;
   ProductListingNotifierBloc() : super(AsyncData(null)){
     _streamController = new StreamController();
     getProductsFromServer();
@@ -96,6 +99,16 @@ class ProductListingNotifierBloc extends StateNotifier<AsyncValue<List<Products>
     state = AsyncLoading();
     receivedProducts.sort((a,b) => a.price!.compareTo(b.price!));
     state = AsyncData(receivedProducts) ;
+  }
+
+  void addProductToCart(Products products){
+    cartProducts.add(products);
+    developer.log(currentScreen , name : "Current product added to cart ${products.id}");
+  }
+
+  void getProductsfromCart(){
+
+    developer.log(currentScreen , name : "Current product added to cart ${cartProducts.length}");
   }
 }
 

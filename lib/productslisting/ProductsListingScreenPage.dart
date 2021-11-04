@@ -49,6 +49,18 @@ class ProductListingState extends State<ProductsListingScreenPage> with SingleTi
     return Scaffold(
       appBar: AppBar(
         title: Text("Product Listing here"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.shopping_cart,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              context.router.navigate(CartProductScreenRoute());
+            },
+          )
+
+        ],
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -124,6 +136,12 @@ class ProductListingState extends State<ProductsListingScreenPage> with SingleTi
     Column(
       children: [
         Text("Product Listing will be done here ${list.length} with counter ${counter}"),
+        ElevatedButton(
+          onPressed: (){
+            context.read(productListProvider.notifier).getProductsfromCart();
+          },
+          child: Text("Get Cart products")  ,
+        ),
         ListView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
@@ -174,7 +192,7 @@ class ProductListingState extends State<ProductsListingScreenPage> with SingleTi
                 TextButton(
                   child: Text(AppConfig.ADD_TO_CART),
                   onPressed: () {
-
+                    context.read(productListProvider.notifier).addProductToCart(currentProduct);
                   },
                 ),
                 TextButton(

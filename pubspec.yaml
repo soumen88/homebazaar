@@ -52,6 +52,7 @@ dependencies:
   dio: ^4.0.1
   flutter_hooks: ^0.18.0
   rflutter_alert: ^2.0.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

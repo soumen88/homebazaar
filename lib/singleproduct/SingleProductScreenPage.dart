@@ -24,14 +24,6 @@ class SingleProductScreenPage extends StatefulWidget {
 
 class _SingleProductListingScreenState extends State<SingleProductScreenPage> {
 
-
-  List<Color> colors = [Colors.blue, Colors.green, Colors.yellow, Colors.pink];
-  List<String> imagePath = ["assets/shoe_blue.png", "assets/shoe_blue.png", "assets/shoe_blue.png", "assets/shoe_blue.png"];
-  var selectedColor = Colors.blue;
-  var isFavourite = false;
-
-
-
   @override
   void initState() {
     String currentScreen = "SingleProductScreenPage";
