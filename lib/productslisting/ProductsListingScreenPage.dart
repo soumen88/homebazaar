@@ -28,27 +28,21 @@ class ProductsListingScreenPage extends StatefulWidget {
 class ProductListingState extends State<ProductsListingScreenPage> with SingleTickerProviderStateMixin{
   int counter = 0;
   String? _groupValue = "1";
-  Animation? _animation;
-  AnimationController? _controller;
+
   ValueChanged<String?> _valueChangedHandler() {
     return (value) => setState(() {
-      context.read(productListProvider.notifier).filterProducts();
+      if(value == "1"){
+        context.read(productListProvider.notifier).orderDecending();
+      }
+      else{
+        context.read(productListProvider.notifier).orderAscending();
+      }
       _groupValue = value!;
     });
   }
 
 
-  @override
-  void initState() {
-    _controller =
-        AnimationController(duration: Duration(milliseconds: 375), vsync: this);
 
-    _animation = Tween(begin: 150.0, end: 260).animate(CurvedAnimation(
-        parent: _controller!,
-        curve: Curves.easeOut,
-        reverseCurve: Curves.easeOut));
-
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +54,7 @@ class ProductListingState extends State<ProductsListingScreenPage> with SingleTi
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Consumer(
                 builder: (context, watch, child) {
@@ -71,7 +66,14 @@ class ProductListingState extends State<ProductsListingScreenPage> with SingleTi
                           //streamController = new StreamController();
                           return handleReponse(data, context);
                         },
-                        loading: () => CircularProgressIndicator(),
+                        loading: () {
+                          developer.log(currentScreen , name : "Displaying loading animation");
+                          return Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height,
+                              child: Center(child: CircularProgressIndicator())
+                          );
+                        },
                         error: (e, st) =>  Text("Something went wrong")
                     ),
                   );
@@ -140,7 +142,8 @@ class ProductListingState extends State<ProductsListingScreenPage> with SingleTi
     String heading = currentProduct.title!;
     String rating = "Rating: " + currentProduct.rating!.rate!.toString();
     String cardUrl = currentProduct.image!;
-    var supportingText = "Category: " + currentProduct.category!;
+    //var supportingText = "Category: " + currentProduct.category!;
+    var supportingText = "Category: " + currentProduct.id!.toString();
     return Card(
         elevation: 4.0,
         child: Column(

@@ -86,6 +86,17 @@ class ProductListingNotifierBloc extends StateNotifier<AsyncValue<List<Products>
     developer.log(currentScreen, name: "Reponse was successful with size ${products.length}");
     state = AsyncData(products) ;
   }
+
+  void orderDecending(){
+    state = AsyncLoading();
+    receivedProducts.sort((a,b) => b.price!.compareTo(a.price!));
+    state = AsyncData(receivedProducts) ;
+  }
+  void orderAscending(){
+    state = AsyncLoading();
+    receivedProducts.sort((a,b) => a.price!.compareTo(b.price!));
+    state = AsyncData(receivedProducts) ;
+  }
 }
 
 Stream<double> getRandomValues() async* {

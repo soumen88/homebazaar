@@ -19,4 +19,5 @@ abstract class Products with _$Products{
 
   factory Products.fromJson(Map<String, dynamic> json) => _$ProductsFromJson(json);
 
+
 }
