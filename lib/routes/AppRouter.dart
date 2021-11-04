@@ -1,7 +1,9 @@
 
 import 'package:auto_route/annotations.dart';
 import 'package:homebazaar/login/LoginScreenPage.dart';
+import 'package:homebazaar/productslisting/FilterProductsScreenPage.dart';
 import 'package:homebazaar/productslisting/ProductsListingScreenPage.dart';
+import 'package:homebazaar/singleproduct/SingleProductScreenPage.dart';
 import 'package:homebazaar/splashscreen/SplashScreenPage.dart';
 
 @MaterialAutoRouter(
@@ -22,6 +24,20 @@ import 'package:homebazaar/splashscreen/SplashScreenPage.dart';
       AutoRoute(
         path: "/productlisting",
         page: ProductsListingScreenPage,
+        children: [
+          RedirectRoute(path: '*', redirectTo: ''),
+        ]
+      ),
+      AutoRoute(
+        path: ":selectedProduct",
+        page: SingleProductScreenPage,
+        children: [
+          RedirectRoute(path: '*', redirectTo: ''),
+        ]
+      ),
+      AutoRoute(
+        path: "/filterProducts",
+        page: FilterProductsScreenPage,
         children: [
           RedirectRoute(path: '*', redirectTo: ''),
         ]
