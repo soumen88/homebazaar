@@ -25,16 +25,30 @@ class ProductsListingScreenPage extends StatefulWidget {
   }
 }
 
-class ProductListingState extends State<ProductsListingScreenPage>{
+class ProductListingState extends State<ProductsListingScreenPage> with SingleTickerProviderStateMixin{
   int counter = 0;
   String? _groupValue = "1";
-
+  Animation? _animation;
+  AnimationController? _controller;
   ValueChanged<String?> _valueChangedHandler() {
     return (value) => setState(() {
       developer.log(currentScreen , name : "Value changed to $value");
       context.read(productListProvider.notifier).filterProducts();
       _groupValue = value!;
     });
+  }
+
+
+  @override
+  void initState() {
+    _controller =
+        AnimationController(duration: Duration(milliseconds: 375), vsync: this);
+
+    _animation = Tween(begin: 150.0, end: 260).animate(CurvedAnimation(
+        parent: _controller!,
+        curve: Curves.easeOut,
+        reverseCurve: Curves.easeOut));
+
   }
 
   @override
@@ -98,6 +112,8 @@ class ProductListingState extends State<ProductsListingScreenPage>{
   }
 
 
+
+
   Widget handleReponse(List<Products>? list, BuildContext context){
     return list == null ?
     Center(
@@ -109,32 +125,66 @@ class ProductListingState extends State<ProductsListingScreenPage>{
         Text("Product Listing will be done here ${list.length} with counter ${counter}"),
         ListView.builder(
           shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
           scrollDirection: Axis.vertical,
           itemCount: list.length,
           itemBuilder: (BuildContext context, int index) {
             Products currentProduct = list[index];
-            return ListTile(
-              title: Text(currentProduct.title ?? "Empty Product Description"),
-              leading: IconButton(
-                icon: Icon(Icons.edit),
-                // 3
-                onPressed: () {
-                  context.router.push(SingleProductScreenRoute(selectedProduct: 5));
-                },
-              ),
-              trailing: IconButton(
-                icon: Icon(Icons.delete),
-                // 3
-                onPressed: () {
-                  context.router.navigate(FilterProductsScreenRoute());
-                },
-              ),
-            );
+            return buildCard(currentProduct);
           },
         ),
       ],
     );
   }
 
+  Card buildCard(Products currentProduct) {
+    String heading = currentProduct.title!;
+    String rating = "Rating: " + currentProduct.rating!.rate!.toString();
+    String cardUrl = currentProduct.image!;
+    var supportingText = "Category: " + currentProduct.category!;
+    return Card(
+        elevation: 4.0,
+        child: Column(
+          children: [
+            ListTile(
+              title: Text(heading),
+              subtitle: Text(rating),
+              trailing: Icon(Icons.favorite_outline),
+            ),
+            Container(
+              height: 200.0,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.network(
+                  cardUrl,
+                  height: 150.0,
+                  width: 100.0,
+                ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.all(16.0),
+              alignment: Alignment.center,
+              child: Text(supportingText),
+            ),
+            ButtonBar(
+              children: [
+                TextButton(
+                  child: Text(AppConfig.ADD_TO_CART),
+                  onPressed: () {
+
+                  },
+                ),
+                TextButton(
+                  child: Text(AppConfig.LEARN_MORE),
+                  onPressed: () {
+
+                  },
+                )
+              ],
+            )
+          ],
+        ));
+  }
 
 }
