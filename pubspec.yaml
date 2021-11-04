@@ -80,6 +80,15 @@ flutter:
   assets:
     - assets/logo.png
     - assets/homebazaar.jpg
+    - assets/back_button.png
+    - assets/bag_button.png
+    - assets/checker.png
+    - assets/heart_icon.png
+    - assets/heart_icon_disabled.png
+    - assets/shoe_blue.png
+    - assets/shoe_green.png
+    - assets/shoe_pink.png
+    - assets/shoe_yellow.png
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

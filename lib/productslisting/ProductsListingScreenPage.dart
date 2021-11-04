@@ -32,7 +32,6 @@ class ProductListingState extends State<ProductsListingScreenPage> with SingleTi
   AnimationController? _controller;
   ValueChanged<String?> _valueChangedHandler() {
     return (value) => setState(() {
-      developer.log(currentScreen , name : "Value changed to $value");
       context.read(productListProvider.notifier).filterProducts();
       _groupValue = value!;
     });
@@ -178,7 +177,7 @@ class ProductListingState extends State<ProductsListingScreenPage> with SingleTi
                 TextButton(
                   child: Text(AppConfig.LEARN_MORE),
                   onPressed: () {
-
+                    context.router.navigate(SingleProductScreenRoute(selectedProduct: currentProduct.id!));
                   },
                 )
               ],

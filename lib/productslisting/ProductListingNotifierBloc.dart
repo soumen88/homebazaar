@@ -16,7 +16,7 @@ List<Products> get receivedProductsFromServer => receivedProducts;
 class ProductListingNotifierBloc extends StateNotifier<AsyncValue<List<Products>?>>{
   StreamController<String>? _streamController;
   StreamController<String> get streamController => _streamController!;
-
+  List<Products> get receivedProductsFromApi => receivedProducts;
   ProductListingNotifierBloc() : super(AsyncData(null)){
     _streamController = new StreamController();
     getProductsFromServer();
@@ -78,6 +78,13 @@ class ProductListingNotifierBloc extends StateNotifier<AsyncValue<List<Products>
     _streamController!.addError(new Exception('An exception'));
     _streamController!.add("This a test data 2");
     _streamController!.close(); //Streams must be closed when not needed
+  }
+
+  void getSingleProductDetails(int productId) async{
+    developer.log(currentScreen, name : "Selected product id from server ${productId}");
+    List<Products> products = receivedProducts.where((element) => element.id! == productId).toList();
+    developer.log(currentScreen, name: "Reponse was successful with size ${products.length}");
+    state = AsyncData(products) ;
   }
 }
 
