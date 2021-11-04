@@ -4,13 +4,15 @@ import 'package:auto_route/src/router/auto_router_x.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homebazaar/AppConfig.dart';
-import 'package:homebazaar/productslisting/FilterProductsScreenPage.dart';
+import 'package:homebazaar/filters/FilterProductsScreenPage.dart';
 import 'package:homebazaar/productslisting/ProductListingNotifierBloc.dart';
 import 'package:homebazaar/productslisting/Products.dart';
 import 'package:homebazaar/providers/Providers.dart';
 import 'package:homebazaar/routes/AppRouter.gr.dart';
 import 'package:homebazaar/singleproduct/SingleProductScreenPage.dart';
 import 'dart:developer' as developer;
+
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 
 class ProductsListingScreenPage extends ConsumerWidget{
@@ -43,7 +45,7 @@ class ProductsListingScreenPage extends ConsumerWidget{
             ),
             ElevatedButton(onPressed: (){
               context.read(productListProvider.notifier).testingStreams();
-
+              _openPopup(context);
               //streamController!.add("This a test data 3");
               //context.read(productListProvider.notifier).filterProducts();
                 //_productListingNotifierBloc.doubleProducts();
@@ -68,6 +70,38 @@ class ProductsListingScreenPage extends ConsumerWidget{
     }, onError: (error) {
       developer.log(currentScreen , name : "Some Error");
     });
+  }
+
+  _openPopup(context) {
+    Alert(
+        context: context,
+        title: "LOGIN",
+        content: Column(
+          children: <Widget>[
+            TextField(
+              decoration: InputDecoration(
+                icon: Icon(Icons.account_circle),
+                labelText: 'Username',
+              ),
+            ),
+            TextField(
+              obscureText: true,
+              decoration: InputDecoration(
+                icon: Icon(Icons.lock),
+                labelText: 'Password',
+              ),
+            ),
+          ],
+        ),
+        buttons: [
+          DialogButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              "LOGIN",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+          )
+        ]).show();
   }
 
   Widget handleReponse(List<Products>? list, BuildContext context){

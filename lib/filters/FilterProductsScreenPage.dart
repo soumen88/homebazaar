@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:homebazaar/productslisting/MyRadioOption.dart';
 import 'package:homebazaar/productslisting/ProductListingNotifierBloc.dart';
 
+
 class FilterProductsScreenPage extends StatefulWidget {
 
   @override
@@ -10,13 +11,8 @@ class FilterProductsScreenPage extends StatefulWidget {
 }
 
 
-class WidgetCallBacks {
-  void onDropDownSelected(String fieldIdentifier){}
-}
-
-
 class _CustomRadioDemoState extends State<FilterProductsScreenPage> {
-
+  ProductListingNotifierBloc productListingNotifierBloc = new ProductListingNotifierBloc();
   String? _groupValue;
 
   ValueChanged<String?> _valueChangedHandler() {
@@ -64,15 +60,9 @@ class _CustomRadioDemoState extends State<FilterProductsScreenPage> {
             label: '4',
             text: 'Sort By Z-A',
           ),
-          /*MyRadioOption<String>(
-            value: '5',
-            groupValue: _groupValue,
-            onChanged: _valueChangedHandler(),
-            label: '5',
-            text: 'Flutter',
-          ),*/
           ElevatedButton(onPressed: (){
-
+            productListingNotifierBloc.testingStreams();
+            productListingNotifierBloc.filterOn = 9;
             context.router.pop(true);
 
           }, child: Text("Apply"))

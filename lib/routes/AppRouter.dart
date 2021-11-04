@@ -1,7 +1,7 @@
 
 import 'package:auto_route/annotations.dart';
 import 'package:homebazaar/login/LoginScreenPage.dart';
-import 'package:homebazaar/productslisting/FilterProductsScreenPage.dart';
+import 'package:homebazaar/filters/FilterProductsScreenPage.dart';
 import 'package:homebazaar/productslisting/ProductsListingScreenPage.dart';
 import 'package:homebazaar/singleproduct/SingleProductScreenPage.dart';
 import 'package:homebazaar/splashscreen/SplashScreenPage.dart';

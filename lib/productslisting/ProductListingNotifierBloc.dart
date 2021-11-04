@@ -22,7 +22,7 @@ class ProductListingNotifierBloc extends StateNotifier<AsyncValue<List<Products>
     getProductsFromServer();
   }
 
-  int? filterOn;
+  int? filterOn = 5;
 
   void getProductsFromServer() async{
     state = AsyncLoading();
