@@ -15,6 +15,7 @@ class UserAuthenticateBloc extends StateNotifier<AsyncValue<bool>>{
 
 
   void hitServerForRegistration(String email, String username, String password) async{
+    state = AsyncLoading();
     var geoLocation = GeoLocation(lat: "-37.3159", long: "81.1496");
     var address = Address(city: "Test", street: "Some street", number: 3, zipcode: "12926-3874", geolocation: geoLocation);
     var userdetails = UserDetails(firstname: "John", lastname: "Doe");

@@ -16,21 +16,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScopeNode currentFocus = FocusScope.of(context);
-        developer.log(currentScreen , name: "Inside listener");
-        if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-          currentFocus.focusedChild!.unfocus();
-        }
-      },
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        title: "Home Bazaar",
-        routeInformationParser: _appRouter.defaultRouteParser(),
-        routerDelegate: _appRouter.delegate(),
-        builder: (context, router) => router!,
-      ),
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      title: "Home Bazaar",
+      routeInformationParser: _appRouter.defaultRouteParser(),
+      routerDelegate: _appRouter.delegate(),
+      builder: (context, router) => router!,
     );
   }
 }
