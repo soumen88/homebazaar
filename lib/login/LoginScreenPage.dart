@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:homebazaar/login/UserAuthenticateBloc.dart';
+import 'package:homebazaar/login/UserDetails.dart';
+import 'package:homebazaar/productslisting/Products.dart';
 import 'package:homebazaar/routes/AppRouter.gr.dart';
 
 class LoginScreenPage extends ConsumerWidget {
+
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     return Scaffold(
@@ -62,7 +66,9 @@ class LoginScreenPage extends ConsumerWidget {
                     child: MaterialButton(
                       minWidth: double.infinity,
                       height:60,
-                      onPressed: (){},
+                      onPressed: (){
+
+                      },
                       color: Colors.indigoAccent[400],
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(40)
