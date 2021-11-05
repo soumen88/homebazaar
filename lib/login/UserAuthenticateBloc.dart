@@ -10,8 +10,8 @@ import 'dart:developer' as developer;
 
 class UserAuthenticateBloc extends StateNotifier<AsyncValue<bool>>{
   String currentScreen = "UserAuthentication";
+  UserAuthenticateBloc() : super(AsyncData(false));
 
-  UserAuthenticateBloc(AsyncValue<bool> state) : super(state);
 
   void hitServerForRegistration(String email, String username, String password) async{
     var geoLocation = GeoLocation(lat: "-37.3159", long: "81.1496");
@@ -26,6 +26,27 @@ class UserAuthenticateBloc extends StateNotifier<AsyncValue<bool>>{
     else{
       state = AsyncData(false);
     }
+  }
+
+  bool isValidEmail(String email){
+    bool isValid = email.contains(new RegExp(
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$'));
+    return isValid;
+  }
+
+
+  bool isPasswordCompliant(String password, [int minLength = 8]) {
+    if (password == null || password.isEmpty) {
+      return false;
+    }
+
+    bool hasUppercase = password.contains(new RegExp(r'[A-Z]'));
+    bool hasDigits = password.contains(new RegExp(r'[0-9]'));
+    bool hasLowercase = password.contains(new RegExp(r'[a-z]'));
+    bool hasSpecialCharacters = password.contains(new RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+    bool hasMinLength = password.length > minLength;
+
+    return hasDigits & hasUppercase & hasLowercase & hasSpecialCharacters & hasMinLength;
   }
 
 }

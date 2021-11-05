@@ -7,12 +7,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homebazaar/login/UserAuthenticateBloc.dart';
 import 'package:homebazaar/login/UserDetails.dart';
 import 'package:homebazaar/productslisting/Products.dart';
+import 'package:homebazaar/providers/Providers.dart';
 import 'package:homebazaar/routes/AppRouter.gr.dart';
 
 class LoginScreenPage extends ConsumerWidget {
-
+  TextEditingController emailController = new TextEditingController();
+  TextEditingController passwordController = new TextEditingController();
   @override
   Widget build(BuildContext context, ScopedReader watch) {
+    final autheticate = watch(authenticateProvider);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
@@ -45,8 +48,8 @@ class LoginScreenPage extends ConsumerWidget {
                   ),
                   child: Column(
                     children: [
-                      makeInput(label: "Email"),
-                      makeInput(label: "Password",obsureText: true),
+                      makeInput("Email", false, emailController),
+                      makeInput("Password",true, passwordController),
                     ],
                   ),
                 ),
@@ -67,7 +70,7 @@ class LoginScreenPage extends ConsumerWidget {
                       minWidth: double.infinity,
                       height:60,
                       onPressed: (){
-
+                        validate(context);
                       },
                       color: Colors.indigoAccent[400],
                       shape: RoundedRectangleBorder(
@@ -103,9 +106,19 @@ class LoginScreenPage extends ConsumerWidget {
       ),
     );
   }
+
+  void validate(BuildContext context){
+    String currentScreen = "LoginScreenPage";
+    String emailEntered = emailController.text.toString();
+    String passwordEntered = passwordController.text.toString();
+    bool isEmailValid = context.read(authenticateProvider.notifier).isValidEmail(emailEntered);
+    bool isPasswordValid = context.read(authenticateProvider.notifier).isPasswordCompliant(passwordEntered);
+    developer.log(currentScreen, name: "Is email valid ${isEmailValid} and ${isPasswordValid}");
+  }
 }
 
-Widget makeInput({label,obsureText = false}){
+//Widget makeInput({label,obsureText = false} ){
+Widget makeInput(String label, bool obsureText, TextEditingController controller ){
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -117,6 +130,7 @@ Widget makeInput({label,obsureText = false}){
       SizedBox(height: 5,),
       TextField(
         obscureText: obsureText,
+        controller: controller,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.symmetric(vertical: 0,horizontal: 10),
           enabledBorder: OutlineInputBorder(
