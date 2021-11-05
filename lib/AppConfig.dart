@@ -8,4 +8,9 @@ class AppConfig{
   static String LEARN_MORE = "Learn More";
   static var black = Color(0xFF2F2F3E);
   static var bodyColor = Color(0xFF6F8398);
+  static var kPrimaryColor = Color(0xFF4F4F4F);
+  static var kBackgroundColor = Color(0xFF333333);
+  static var kRedColor = Color(0xFFEB5757);
+
+  static var kDefaultPadding = 20.0;
 }

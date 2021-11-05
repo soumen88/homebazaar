@@ -52,7 +52,7 @@ dependencies:
   dio: ^4.0.1
   flutter_hooks: ^0.18.0
   rflutter_alert: ^2.0.4
-
+  flutter_svg: ^0.23.0+1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -90,6 +90,8 @@ flutter:
     - assets/shoe_green.png
     - assets/shoe_pink.png
     - assets/shoe_yellow.png
+    - assets/images/
+    - assets/icons/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

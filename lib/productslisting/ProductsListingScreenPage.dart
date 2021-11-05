@@ -4,6 +4,7 @@ import 'package:auto_route/src/router/auto_router_x.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homebazaar/AppConfig.dart';
+import 'package:homebazaar/components/BuyButton.dart';
 import 'package:homebazaar/filters/FilterProductsScreenPage.dart';
 import 'package:homebazaar/productslisting/ProductListingNotifierBloc.dart';
 import 'package:homebazaar/productslisting/Products.dart';
@@ -79,7 +80,6 @@ class ProductListingState extends State<ProductsListingScreenPage> with SingleTi
                           return handleReponse(data, context);
                         },
                         loading: () {
-                          developer.log(currentScreen , name : "Displaying loading animation");
                           return Container(
                               width: MediaQuery.of(context).size.width,
                               height: MediaQuery.of(context).size.height,
@@ -142,6 +142,7 @@ class ProductListingState extends State<ProductsListingScreenPage> with SingleTi
           },
           child: Text("Get Cart products")  ,
         ),
+
         ListView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
