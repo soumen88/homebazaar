@@ -24,32 +24,24 @@ class SplashScreenState extends State<SplashScreenPage>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Home Bazaar"),),
-      body: Container(
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              ElevatedButton(
-                onPressed: () => context.router.navigate(LoginScreenRoute()),
-                child: Text(
-                  'Go to SignupScreen',
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Container(
+              alignment: Alignment.center,
+              child: Container(
+                width: 300.0,
+                height: 500.0,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30.0),
+                    image: DecorationImage(
+                        image: AssetImage(
+                          "assets/homebazaar.jpg",
+                        ), fit: BoxFit.cover)
                 ),
               ),
-              Container(
-                alignment: Alignment.center,
-                child: Container(
-                  width: 300.0,
-                  height: 500.0,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30.0),
-                      image: DecorationImage(
-                          image: AssetImage(
-                            "assets/homebazaar.jpg",
-                          ), fit: BoxFit.cover)
-                  ),
-                ),
-              )
-            ],
-          ) ,
+            )
+          ],
         ),
       ),
     );
