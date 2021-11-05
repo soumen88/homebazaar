@@ -9,4 +9,4 @@ final productListProvider = StateNotifierProvider.autoDispose<ProductListingNoti
   return ProductListingNotifierBloc();
 });
 
-final counterProvider = ChangeNotifierProvider<QuantityBloc>((ref) => QuantityBloc());
+final counterProvider = ChangeNotifierProvider.autoDispose<QuantityBloc>((ref) => QuantityBloc());

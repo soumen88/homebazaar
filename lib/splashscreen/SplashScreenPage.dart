@@ -65,6 +65,7 @@ class SplashScreenState extends State<SplashScreenPage>{
 
   void startLoginScreen(){
     timer?.cancel();
-    context.router.navigate(ProductsListingScreenRoute());
+    context.router.push(LoginScreenRoute());
+    //context.router.navigate(ProductsListingScreenRoute());
   }
 }

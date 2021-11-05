@@ -4,6 +4,7 @@ import 'package:homebazaar/cart/CartProductScreenPage.dart';
 import 'package:homebazaar/login/LoginScreenPage.dart';
 import 'package:homebazaar/filters/FilterProductsScreenPage.dart';
 import 'package:homebazaar/productslisting/ProductsListingScreenPage.dart';
+import 'package:homebazaar/registration/RegistrationScreenPage.dart';
 import 'package:homebazaar/singleproduct/SingleProductScreenPage.dart';
 import 'package:homebazaar/splashscreen/SplashScreenPage.dart';
 
@@ -18,6 +19,13 @@ import 'package:homebazaar/splashscreen/SplashScreenPage.dart';
       AutoRoute(
         path: "/login",
         page: LoginScreenPage,
+        children: [
+          RedirectRoute(path: '*', redirectTo: ''),
+        ]
+      ),
+      AutoRoute(
+        path: "/registration",
+        page: RegistrationScreenPage,
         children: [
           RedirectRoute(path: '*', redirectTo: ''),
         ]
