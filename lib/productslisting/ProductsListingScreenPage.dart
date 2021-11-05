@@ -1,22 +1,12 @@
-import 'dart:async';
-
 import 'package:auto_route/src/router/auto_router_x.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homebazaar/AppConfig.dart';
-import 'package:homebazaar/components/BuyButton.dart';
-import 'package:homebazaar/filters/FilterProductsScreenPage.dart';
 import 'package:homebazaar/productslisting/ProductListingNotifierBloc.dart';
 import 'package:homebazaar/productslisting/Products.dart';
 import 'package:homebazaar/providers/Providers.dart';
 import 'package:homebazaar/routes/AppRouter.gr.dart';
-import 'package:homebazaar/singleproduct/SingleProductScreenPage.dart';
 import 'dart:developer' as developer;
-
-import 'package:rflutter_alert/rflutter_alert.dart';
-
-import 'MyRadioOption.dart';
 
 
 class ProductsListingScreenPage extends StatefulWidget {
@@ -27,21 +17,8 @@ class ProductsListingScreenPage extends StatefulWidget {
   }
 }
 
-class ProductListingState extends State<ProductsListingScreenPage> with SingleTickerProviderStateMixin{
+class ProductListingState extends State<ProductsListingScreenPage>{
   int counter = 0;
-  String? _groupValue = "1";
-
-  ValueChanged<String?> _valueChangedHandler() {
-    return (value) => setState(() {
-      if(value == "1"){
-        context.read(productListProvider.notifier).orderDecending();
-      }
-      else{
-        context.read(productListProvider.notifier).orderAscending();
-      }
-      _groupValue = value!;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,37 +70,16 @@ class ProductListingState extends State<ProductsListingScreenPage> with SingleTi
           ),
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-
-        shape: CircularNotchedRectangle(),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            MyRadioOption<String>(
-              value: '1',
-              groupValue: _groupValue,
-              onChanged: _valueChangedHandler(),
-              label: '1',
-              text: 'Low to High',
-            ),
-            MyRadioOption<String>(
-              value: '2',
-              groupValue: _groupValue,
-              onChanged: _valueChangedHandler(),
-              label: '2',
-              text: 'High To Low',
-            ),
-
-          ],
+      floatingActionButton: FloatingActionButton(
+            elevation: 0.0,
+            child: new Icon(Icons.filter_alt_rounded),
+            backgroundColor: Colors.blue,
+            onPressed: (){
+              startProductFilteringScreen();
+            }
         ),
-        color: Color.fromARGB(255, 238,106,41),
-      ),
     );
   }
-
-
-
 
   Widget handleReponse(List<Products>? list, BuildContext context){
     return list == null ?
@@ -134,13 +90,6 @@ class ProductListingState extends State<ProductsListingScreenPage> with SingleTi
     Column(
       children: [
         Text("Product Listing will be done here ${list.length} with counter ${counter}"),
-        ElevatedButton(
-          onPressed: (){
-            context.read(productListProvider.notifier).getProductsfromCart();
-          },
-          child: Text("Get Cart products")  ,
-        ),
-
         ListView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
@@ -192,9 +141,7 @@ class ProductListingState extends State<ProductsListingScreenPage> with SingleTi
                   child: Text(AppConfig.ADD_TO_CART),
                   onPressed: () {
                     //context.read(productListProvider.notifier).addProductToCart(currentProduct);
-                    context.router.push(FilterProductsScreenRoute(onSortOrderSelected: (received){
-                      developer.log(currentScreen, name: "Sorting Callback received $received");
-                    }));
+
                   },
                 ),
                 TextButton(
@@ -217,4 +164,19 @@ class ProductListingState extends State<ProductsListingScreenPage> with SingleTi
         ));
   }
 
+  void startProductFilteringScreen(){
+    context.router.push(FilterProductsScreenRoute(onSortOrderSelected: (received){
+      developer.log(currentScreen, name: "Sorting Callback received $received");
+      handleFiltering(received!);
+    }));
+  }
+
+  void handleFiltering(String value){
+    if(value == "1"){
+      context.read(productListProvider.notifier).orderDecending();
+    }
+    else{
+      context.read(productListProvider.notifier).orderAscending();
+    }
+  }
 }

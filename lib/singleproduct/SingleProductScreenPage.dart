@@ -51,35 +51,29 @@ class _SingleProductListingScreenState extends State<SingleProductScreenPage> {
 
       child: Scaffold(
         appBar: AppBar(title: Text("Single Product Listing"),),
-        body: Center(
-          child: Column(
-            children: [
-              Text("We are in the single product listing screen ${widget.selectedProduct} and ${receivedProductsFromServer.length}"),
-              Consumer(
-                builder: (context, watch, child) {
-                  final futureProducts = watch(productListProvider);
-                  return Container(
-                    child: futureProducts.when(
-                        data: (data) {
-                          return handleReponse(data!.first);
-                        },
-                        loading: () => CircularProgressIndicator(),
-                        error: (e, st) =>  Text("Something went wrong")
-                    ),
-                  );
-                },
-              ),
-              Expanded(
-                child: Align(
-                  alignment: FractionalOffset.bottomCenter,
-                  child: BuyButton(tap: ()  {
-                    developer.log(currentScreen , name : "Buy button was tapped");
-
-                  }) ,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Text("We are in the single product listing screen ${widget.selectedProduct} and ${receivedProductsFromServer.length}"),
+                Consumer(
+                  builder: (context, watch, child) {
+                    final futureProducts = watch(productListProvider);
+                    return Container(
+                      child: futureProducts.when(
+                          data: (data) {
+                            return handleReponse(data!.first);
+                          },
+                          loading: () => CircularProgressIndicator(),
+                          error: (e, st) =>  Text("Something went wrong")
+                      ),
+                    );
+                  },
                 ),
-              ),
-            ],
-          ),
+
+              ],
+            ),
+          ) ,
         ),
       ),
     );
@@ -116,6 +110,7 @@ class _SingleProductListingScreenState extends State<SingleProductScreenPage> {
                   cardUrl,
                   height: size.height * 0.4,
                   fit: BoxFit.fitHeight,
+                  width: MediaQuery.of(context).size.width,
                 )
             ),
             Container(
@@ -167,8 +162,10 @@ class _SingleProductListingScreenState extends State<SingleProductScreenPage> {
               ) ,
             ),
             SizedBox(width: 10),
+            BuyButton(tap: ()  {
+              developer.log(currentScreen , name : "Buy button was tapped");
 
-
+            })
 
           ],
         ));
