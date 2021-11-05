@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homebazaar/AppConfig.dart';
+import 'package:homebazaar/providers/Providers.dart';
 
 
-class QuantityCounter extends StatelessWidget {
+class QuantityCounter extends ConsumerWidget {
 
   QuantityCounter({
     Key? key,
@@ -12,17 +14,15 @@ class QuantityCounter extends StatelessWidget {
 
   final VoidCallback? incrementCountSelected;
   final VoidCallback? decrementCountSelected;
-  int counter = 0;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ScopedReader watch) {
+    final count = watch(counterProvider).count;
     return Row(
       children: [
         QtyButton(
           tap: () {
-            if(counter <= 0){
-              counter = 0;
-            }
+            context.read(counterProvider.notifier).decrement();
             decrementCountSelected!();
           },
           text: '-',
@@ -31,7 +31,7 @@ class QuantityCounter extends StatelessWidget {
         SizedBox(width: 10),
 
         Text(
-          '1',
+          '$count',
           style: TextStyle(
             fontSize: 38
           ),
@@ -41,7 +41,7 @@ class QuantityCounter extends StatelessWidget {
 
         QtyButton(
           tap: () {
-            counter++;
+            context.read(counterProvider.notifier).increment();
             incrementCountSelected!();
           },
           text: '+',
@@ -66,18 +66,18 @@ class QtyButton extends StatelessWidget {
     return GestureDetector(
       onTap: tap,
       child: Container(
-        width: 30.0,
-        height: 30.0,
+        width: 50.0,
+        height: 50.0,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppConfig.kDefaultPadding * 0.5),
-          color: Colors.white
+            borderRadius: BorderRadius.circular(AppConfig.kDefaultPadding * 0.5),
+            color: Colors.blue
         ),
         child: Text(
           text!,
           style: TextStyle(
-            color: AppConfig.kRedColor,
-            fontSize: 40
+              color: AppConfig.whiteColor,
+              fontSize: 40
           ),
         ),
       ),

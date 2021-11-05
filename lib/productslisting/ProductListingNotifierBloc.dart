@@ -90,6 +90,11 @@ class ProductListingNotifierBloc extends StateNotifier<AsyncValue<List<Products>
     state = AsyncData(products) ;
   }
 
+  void loadPreviousProducts(){
+    state = AsyncLoading();
+    state = AsyncData(receivedProducts) ;
+  }
+
   void orderDecending(){
     state = AsyncLoading();
     receivedProducts.sort((a,b) => b.price!.compareTo(a.price!));

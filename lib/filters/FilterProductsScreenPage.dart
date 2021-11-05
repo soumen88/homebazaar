@@ -6,6 +6,11 @@ import 'package:homebazaar/productslisting/ProductListingNotifierBloc.dart';
 
 class FilterProductsScreenPage extends StatefulWidget {
 
+  final void Function(String?)? onSortOrderSelected;
+
+
+  FilterProductsScreenPage({Key? key,this.onSortOrderSelected}) : super(key: key);
+
   @override
   State createState() => new _CustomRadioDemoState();
 }
@@ -61,10 +66,8 @@ class _CustomRadioDemoState extends State<FilterProductsScreenPage> {
             text: 'Sort By Z-A',
           ),
           ElevatedButton(onPressed: (){
-            productListingNotifierBloc.testingStreams();
-            productListingNotifierBloc.filterOn = 9;
-            context.router.pop(true);
-
+              widget.onSortOrderSelected!(_groupValue);
+              context.router.pop();
           }, child: Text("Apply"))
         ],
       ),

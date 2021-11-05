@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:auto_route/src/router/auto_router_x.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homebazaar/AppConfig.dart';
 import 'package:homebazaar/components/BuyButton.dart';
@@ -41,9 +42,6 @@ class ProductListingState extends State<ProductsListingScreenPage> with SingleTi
       _groupValue = value!;
     });
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -193,13 +191,24 @@ class ProductListingState extends State<ProductsListingScreenPage> with SingleTi
                 TextButton(
                   child: Text(AppConfig.ADD_TO_CART),
                   onPressed: () {
-                    context.read(productListProvider.notifier).addProductToCart(currentProduct);
+                    //context.read(productListProvider.notifier).addProductToCart(currentProduct);
+                    context.router.push(FilterProductsScreenRoute(onSortOrderSelected: (received){
+                      developer.log(currentScreen, name: "Sorting Callback received $received");
+                    }));
                   },
                 ),
                 TextButton(
                   child: Text(AppConfig.LEARN_MORE),
                   onPressed: () {
-                    context.router.navigate(SingleProductScreenRoute(selectedProduct: currentProduct.id!));
+                    context.router.push(
+                      SingleProductScreenRoute(
+                          selectedProduct: currentProduct.id!,
+                          onRateBook: (rating) {
+                            // handle result
+                            developer.log(currentScreen, name: "Callback received $rating");
+                          }),
+                    );
+                    //context.router.navigate(SingleProductScreenRoute(selectedProduct: currentProduct.id!));
                   },
                 )
               ],

@@ -15,10 +15,12 @@ import 'dart:developer' as developer;
 
 class SingleProductScreenPage extends StatefulWidget {
   int selectedProduct;
-
+  final void Function(int) onRateBook;
   SingleProductScreenPage({
     Key? key,
-    @PathParam() required this.selectedProduct })
+    @PathParam() required this.selectedProduct,
+    required this.onRateBook
+    })
       : super(key: key);
 
   @override
@@ -26,6 +28,7 @@ class SingleProductScreenPage extends StatefulWidget {
 }
 
 class _SingleProductListingScreenState extends State<SingleProductScreenPage> {
+
 
   @override
   void initState() {
@@ -43,38 +46,40 @@ class _SingleProductListingScreenState extends State<SingleProductScreenPage> {
 
   @override
   Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: _onWillPop,
 
-
-
-    return Scaffold(
-      appBar: AppBar(title: Text("Single Product Listing"),),
-      body: Center(
-        child: Column(
-          children: [
-            Text("We are in the single product listing screen ${widget.selectedProduct} and ${receivedProductsFromServer.length}"),
-            Consumer(
-              builder: (context, watch, child) {
-                final futureProducts = watch(productListProvider);
-                return Container(
-                  child: futureProducts.when(
-                      data: (data) {
-                        return handleReponse(data!.first);
-                      },
-                      loading: () => CircularProgressIndicator(),
-                      error: (e, st) =>  Text("Something went wrong")
-                  ),
-                );
-              },
-            ),
-            Expanded(
-              child: Align(
-                alignment: FractionalOffset.bottomCenter,
-                child: BuyButton(tap: () {
-                  developer.log(currentScreen , name : "Buy button was tapped");
-                }) ,
+      child: Scaffold(
+        appBar: AppBar(title: Text("Single Product Listing"),),
+        body: Center(
+          child: Column(
+            children: [
+              Text("We are in the single product listing screen ${widget.selectedProduct} and ${receivedProductsFromServer.length}"),
+              Consumer(
+                builder: (context, watch, child) {
+                  final futureProducts = watch(productListProvider);
+                  return Container(
+                    child: futureProducts.when(
+                        data: (data) {
+                          return handleReponse(data!.first);
+                        },
+                        loading: () => CircularProgressIndicator(),
+                        error: (e, st) =>  Text("Something went wrong")
+                    ),
+                  );
+                },
               ),
-            ),
-          ],
+              Expanded(
+                child: Align(
+                  alignment: FractionalOffset.bottomCenter,
+                  child: BuyButton(tap: ()  {
+                    developer.log(currentScreen , name : "Buy button was tapped");
+
+                  }) ,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -86,10 +91,10 @@ class _SingleProductListingScreenState extends State<SingleProductScreenPage> {
       child: CircularProgressIndicator(),
     )
         : Column(
-            children: [
-              buildCard(currentProduct)
-            ],
-         );
+      children: [
+        buildCard(currentProduct)
+      ],
+    );
   }
 
   Card buildCard(Products currentProduct) {
@@ -121,41 +126,59 @@ class _SingleProductListingScreenState extends State<SingleProductScreenPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                  Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Text(
-                        heading,
-                        style: TextStyle(
-                            fontSize: 24
-                        ),
-                      ),
-                  )
+                Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    heading,
+                    style: TextStyle(
+                        fontSize: 24
+                    ),
+                  ),
+                )
               ],
             ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SvgPicture.asset(
-                  'assets/icons/star.svg',
-                  width: AppConfig.kDefaultPadding * 0.8,
-                ),
+            Padding(
+              padding: EdgeInsets.all(16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SvgPicture.asset(
+                    'assets/icons/star.svg',
+                    width: AppConfig.kDefaultPadding * 0.8,
+                  ),
 
-                SizedBox(width: AppConfig.kDefaultPadding * 0.5),
+                  SizedBox(width: AppConfig.kDefaultPadding * 0.5),
 
-                Text('${rating}')
-              ],
+                  Text('${rating}'),
+
+                  Flexible(fit: FlexFit.tight, child: SizedBox()),
+
+                  QuantityCounter(
+                    incrementCountSelected: () {
+                      developer.log(currentScreen , name :"increment Count was selected.");
+
+                    },
+                    decrementCountSelected: (){
+                      developer.log(currentScreen , name :"decrement Count was selected.");
+                    },
+                  ),
+                ],
+              ) ,
             ),
             SizedBox(width: 10),
-            QuantityCounter(
-              incrementCountSelected: () {
-                developer.log(currentScreen , name :"increment Count was selected.");
-              },
-              decrementCountSelected: (){
-                developer.log(currentScreen , name :"decrement Count was selected.");
-              },
-            ),
+
+
 
           ],
         ));
+  }
+
+  Future<bool> _onWillPop()  async {
+    developer.log(currentScreen, name: "Back button pressed");
+    widget.onRateBook(5);
+    context.read(productListProvider.notifier).loadPreviousProducts();
+    return Future.value(context.router.removeLast());
+
   }
 }
