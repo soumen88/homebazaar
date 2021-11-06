@@ -166,7 +166,7 @@ class _SingleProductListingScreenState extends State<SingleProductScreenPage> {
             BuyButton(tap: ()  {
               developer.log(currentScreen , name : "Buy button was tapped");
 
-            })
+            },buttonText: "Buy Now",)
 
           ],
         ));

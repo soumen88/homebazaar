@@ -107,7 +107,8 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
         bottomNavigationBar: BuyButton(tap: ()  {
           developer.log(currentScreen , name : "Buy button was tapped");
           prepareCheckoutcart();
-        }),
+        },
+        buttonText: "Buy Now",),
       ),
     );
   }

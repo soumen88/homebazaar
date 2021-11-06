@@ -4,13 +4,14 @@ import '../AppConfig.dart';
 
 
 class BuyButton extends StatelessWidget {
-  const BuyButton({
+  BuyButton({
     Key? key,
     @required this.tap,
+    @required this.buttonText,
   }) : super(key: key);
 
   final GestureTapCallback? tap;
-
+  String? buttonText;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -23,7 +24,7 @@ class BuyButton extends StatelessWidget {
         height: 50.0,
         alignment: Alignment.center,
         child: Text(
-          'Buy Now',
+          '$buttonText',
           style: TextStyle(
             color: Colors.white,
             fontSize: 18.0,

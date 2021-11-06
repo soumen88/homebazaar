@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'dart:developer' as developer;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homebazaar/AppConfig.dart';
+import 'package:homebazaar/components/BuyButton.dart';
 import 'package:homebazaar/providers/Providers.dart';
 import 'package:homebazaar/routes/AppRouter.gr.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -112,31 +113,13 @@ class LoginScreenPage extends ConsumerWidget {
           padding: EdgeInsets.symmetric(horizontal: 40),
           child: Container(
             padding: EdgeInsets.only(top: 3,left: 3),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(40),
-                border: Border(
-                    bottom: BorderSide(color: Colors.black),
-                    top: BorderSide(color: Colors.black),
-                    right: BorderSide(color: Colors.black),
-                    left: BorderSide(color: Colors.black)
-                )
-            ),
-            child: MaterialButton(
-              minWidth: double.infinity,
-              height:60,
-              onPressed: (){
-                validate(context);
-              },
-              color: Colors.indigoAccent[400],
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(40)
-              ),
-              child: Text("Login",style: TextStyle(
-                  fontWeight: FontWeight.w600,fontSize: 16,color: Colors.white70
-              ),),
-            ),
+            child: BuyButton(tap: ()  {
+              validate(context);
+
+            },buttonText: "Login",),
           ),
         ),
+
         SizedBox(height: 20,),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,

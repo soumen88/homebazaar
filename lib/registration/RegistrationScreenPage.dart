@@ -1,10 +1,14 @@
 import 'package:auto_route/src/router/auto_router_x.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:homebazaar/components/BuyButton.dart';
 import 'package:homebazaar/providers/Providers.dart';
 import 'dart:developer' as developer;
 
 import 'package:homebazaar/routes/AppRouter.gr.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../AppConfig.dart';
 
 class RegistrationScreenPage extends ConsumerWidget {
   TextEditingController emailController = new TextEditingController();
@@ -14,99 +18,87 @@ class RegistrationScreenPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     final autheticate = watch(authenticateProvider);
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
-      appBar: AppBar(title: Text("Sign Up"),),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Column(
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text ("Sign up", style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                      ),),
-                      SizedBox(height: 20,),
-                      Text("Create an Account,Its free",style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.grey[700],
-                      ),),
-                      SizedBox(height: 30,)
-                    ],
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 40
-                    ),
-                    child: Column(
+    return GestureDetector(
+      onTap: (){
+        dismissKeyboard(context);
+      },
+      onTapUp:(details){
+        dismissKeyboard(context);
+      },
+      onTapDown: (details){
+        dismissKeyboard(context);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(title: Text("Sign Up"),),
+        body: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Column(
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        makeInput("Email", false, emailController),
-                        makeInput("Username",false, userNameController),
-                        makeInput("Password",true, passwordController),
-
+                        Text ("Sign up", style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                        ),),
+                        SizedBox(height: 20,),
+                        Text("Create an Account, And Look up to great deals!",style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.grey[700],
+                        ),),
+                        SizedBox(height: 30,)
                       ],
                     ),
-                  ),
-                  Container(
-                    child: autheticate.when(
-                        data: (data) {
-                          if(data){
-                            startProductListingScreen(context);
-                            return Text("Result was successful");
-                          }
-                          else{
-                            return Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 40),
-                              child: Container(
-                                padding: EdgeInsets.only(top: 3,left: 3),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(40),
-                                    border: Border(
-                                        bottom: BorderSide(color: Colors.black),
-                                        top: BorderSide(color: Colors.black),
-                                        right: BorderSide(color: Colors.black),
-                                        left: BorderSide(color: Colors.black)
-                                    )
-                                ),
-                                child: MaterialButton(
-                                  minWidth: double.infinity,
-                                  height:60,
-                                  onPressed: (){
-                                    validate(context);
-                                  },
-                                  color: Colors.redAccent,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(40)
-                                  ),
-                                  child: Text("Sign Up",style: TextStyle(
-                                    fontWeight: FontWeight.w600,fontSize: 16,
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 40
+                      ),
+                      child: Column(
+                        children: [
+                          makeInput("Email", false, emailController),
+                          makeInput("Username",false, userNameController),
+                          makeInput("Password",true, passwordController),
 
-                                  ),),
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                        loading: () {
-                          return Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height,
-                              child: Center(child: CircularProgressIndicator())
-                          );
-                        },
-                        error: (e, st) =>  Text("Something went wrong")
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    Container(
+                      child: autheticate.when(
+                          data: (data) {
+                            if(data){
+                              startProductListingScreen(context);
+                            }
+                            else{
+                              return Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 40),
+                                child: Container(
+                                  padding: EdgeInsets.only(top: 3,left: 3),
+                                  child: BuyButton(tap: ()  {
+                                    validate(context);
+                                  },buttonText: "Sign Up",),
+                                ),
+                              );
+                            }
+                          },
+                          loading: () {
+                            return Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                child: Center(child: CircularProgressIndicator())
+                            );
+                          },
+                          error: (e, st) =>  Text("Something went wrong")
+                      ),
+                    ),
+                  ],
 
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -141,10 +133,18 @@ class RegistrationScreenPage extends ConsumerWidget {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  void startProductListingScreen(BuildContext context){
-    context.router.navigate(ProductsListingScreenRoute());
+  void startProductListingScreen(BuildContext context) async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(AppConfig.LOGIN_SUCCESS_KEY, "Success");
+    context.router.replace(ProductsListingScreenRoute());
   }
 
+  void dismissKeyboard(BuildContext context){
+    FocusScopeNode currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus) {
+      currentFocus.unfocus();
+    }
+  }
 }
 
 //Widget makeInput({label,obsureText = false}){
