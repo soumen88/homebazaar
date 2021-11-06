@@ -22,13 +22,14 @@ class _$ProductsTearOff {
   const _$ProductsTearOff();
 
   _Products call(
-      {int? id,
-      String? title,
-      double? price,
-      String? description,
-      String? category,
-      String? image,
-      Ratings? rating}) {
+      {required int? id,
+      required String? title,
+      required double? price,
+      required String? description,
+      required String? category,
+      required String? image,
+      required Ratings? rating,
+      @JsonKey() required int? addedCount}) {
     return _Products(
       id: id,
       title: title,
@@ -37,6 +38,7 @@ class _$ProductsTearOff {
       category: category,
       image: image,
       rating: rating,
+      addedCount: addedCount,
     );
   }
 
@@ -57,6 +59,8 @@ mixin _$Products {
   String? get category => throw _privateConstructorUsedError;
   String? get image => throw _privateConstructorUsedError;
   Ratings? get rating => throw _privateConstructorUsedError;
+  @JsonKey()
+  int? get addedCount => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -75,7 +79,8 @@ abstract class $ProductsCopyWith<$Res> {
       String? description,
       String? category,
       String? image,
-      Ratings? rating});
+      Ratings? rating,
+      @JsonKey() int? addedCount});
 
   $RatingsCopyWith<$Res>? get rating;
 }
@@ -97,6 +102,7 @@ class _$ProductsCopyWithImpl<$Res> implements $ProductsCopyWith<$Res> {
     Object? category = freezed,
     Object? image = freezed,
     Object? rating = freezed,
+    Object? addedCount = freezed,
   }) {
     return _then(_value.copyWith(
       id: id == freezed
@@ -127,6 +133,10 @@ class _$ProductsCopyWithImpl<$Res> implements $ProductsCopyWith<$Res> {
           ? _value.rating
           : rating // ignore: cast_nullable_to_non_nullable
               as Ratings?,
+      addedCount: addedCount == freezed
+          ? _value.addedCount
+          : addedCount // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 
@@ -154,7 +164,8 @@ abstract class _$ProductsCopyWith<$Res> implements $ProductsCopyWith<$Res> {
       String? description,
       String? category,
       String? image,
-      Ratings? rating});
+      Ratings? rating,
+      @JsonKey() int? addedCount});
 
   @override
   $RatingsCopyWith<$Res>? get rating;
@@ -178,6 +189,7 @@ class __$ProductsCopyWithImpl<$Res> extends _$ProductsCopyWithImpl<$Res>
     Object? category = freezed,
     Object? image = freezed,
     Object? rating = freezed,
+    Object? addedCount = freezed,
   }) {
     return _then(_Products(
       id: id == freezed
@@ -208,21 +220,27 @@ class __$ProductsCopyWithImpl<$Res> extends _$ProductsCopyWithImpl<$Res>
           ? _value.rating
           : rating // ignore: cast_nullable_to_non_nullable
               as Ratings?,
+      addedCount: addedCount == freezed
+          ? _value.addedCount
+          : addedCount // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$_Products implements _Products {
   const _$_Products(
-      {this.id,
-      this.title,
-      this.price,
-      this.description,
-      this.category,
-      this.image,
-      this.rating});
+      {required this.id,
+      required this.title,
+      required this.price,
+      required this.description,
+      required this.category,
+      required this.image,
+      required this.rating,
+      @JsonKey() required this.addedCount});
 
   factory _$_Products.fromJson(Map<String, dynamic> json) =>
       _$$_ProductsFromJson(json);
@@ -241,10 +259,13 @@ class _$_Products implements _Products {
   final String? image;
   @override
   final Ratings? rating;
+  @override
+  @JsonKey()
+  final int? addedCount;
 
   @override
   String toString() {
-    return 'Products(id: $id, title: $title, price: $price, description: $description, category: $category, image: $image, rating: $rating)';
+    return 'Products(id: $id, title: $title, price: $price, description: $description, category: $category, image: $image, rating: $rating, addedCount: $addedCount)';
   }
 
   @override
@@ -266,7 +287,10 @@ class _$_Products implements _Products {
             (identical(other.image, image) ||
                 const DeepCollectionEquality().equals(other.image, image)) &&
             (identical(other.rating, rating) ||
-                const DeepCollectionEquality().equals(other.rating, rating)));
+                const DeepCollectionEquality().equals(other.rating, rating)) &&
+            (identical(other.addedCount, addedCount) ||
+                const DeepCollectionEquality()
+                    .equals(other.addedCount, addedCount)));
   }
 
   @override
@@ -278,7 +302,8 @@ class _$_Products implements _Products {
       const DeepCollectionEquality().hash(description) ^
       const DeepCollectionEquality().hash(category) ^
       const DeepCollectionEquality().hash(image) ^
-      const DeepCollectionEquality().hash(rating);
+      const DeepCollectionEquality().hash(rating) ^
+      const DeepCollectionEquality().hash(addedCount);
 
   @JsonKey(ignore: true)
   @override
@@ -293,13 +318,14 @@ class _$_Products implements _Products {
 
 abstract class _Products implements Products {
   const factory _Products(
-      {int? id,
-      String? title,
-      double? price,
-      String? description,
-      String? category,
-      String? image,
-      Ratings? rating}) = _$_Products;
+      {required int? id,
+      required String? title,
+      required double? price,
+      required String? description,
+      required String? category,
+      required String? image,
+      required Ratings? rating,
+      @JsonKey() required int? addedCount}) = _$_Products;
 
   factory _Products.fromJson(Map<String, dynamic> json) = _$_Products.fromJson;
 
@@ -317,6 +343,9 @@ abstract class _Products implements Products {
   String? get image => throw _privateConstructorUsedError;
   @override
   Ratings? get rating => throw _privateConstructorUsedError;
+  @override
+  @JsonKey()
+  int? get addedCount => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$ProductsCopyWith<_Products> get copyWith =>

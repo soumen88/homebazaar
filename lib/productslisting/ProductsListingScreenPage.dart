@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homebazaar/AppConfig.dart';
+import 'package:homebazaar/components/NavBar.dart';
 import 'package:homebazaar/productslisting/ProductListingNotifierBloc.dart';
 import 'package:homebazaar/productslisting/Products.dart';
 import 'package:homebazaar/providers/Providers.dart';
@@ -19,7 +20,7 @@ class ProductsListingScreenPage extends StatefulWidget {
 }
 
 class ProductListingState extends State<ProductsListingScreenPage>{
-  int counter = 0;
+
   ScrollController? _scrollController;
   bool isApiCallinProgress = false;
   bool isScrollListnerAdded = false;
@@ -45,50 +46,7 @@ class ProductListingState extends State<ProductsListingScreenPage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Product Listing here"),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0, top: 8.0),
-            child: GestureDetector(
-              child: Stack(
-                alignment: Alignment.topCenter,
-                children: <Widget>[
-                  Icon(
-                    Icons.shopping_cart,
-                    size: 36.0,
-                  ),
-                  if (counter > 0)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 2.0),
-                      child: CircleAvatar(
-                        radius: 8.0,
-                        backgroundColor: Colors.red,
-                        foregroundColor: Colors.white,
-                        child: Text(
-                          counter.toString(),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-              onTap: () {
-                removeListener();
-                context.router.push(CartProductScreenRoute(cartClosed:() {
-                  developer.log(currentScreen, name : "Cart closed invoked");
-                  _scrollController = new ScrollController();
-                  isScrollListnerAdded = false;
-                  addScrollListener();
-                }));
-              },
-            ),
-          ),
-        ],
-      ),
+      appBar: NavBar(screenName: "Home Bazaar",),
       body: SingleChildScrollView(
         controller:  _scrollController,
         child: Center(
@@ -226,11 +184,7 @@ class ProductListingState extends State<ProductsListingScreenPage>{
                 TextButton(
                   child: Text(AppConfig.ADD_TO_CART),
                   onPressed: () {
-                    context.read(productListProvider.notifier).addProductToCart(currentProduct);
-                    setState(() {
-                      counter++;
-                    });
-
+                    context.read(cartProductsNotifier.notifier).changeProductCount(currentProduct, true);
                   },
                 ),
                 TextButton(

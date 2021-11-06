@@ -6,15 +6,17 @@ part 'Products.g.dart';
 
 @freezed
 abstract class Products with _$Products{
-
+  @JsonSerializable(explicitToJson: true)
   const factory Products({
-    int?  id,
-    String?  title,
-    double?  price,
-    String?  description,
-    String?  category,
-    String?  image,
-    Ratings?  rating
+    required int?  id,
+    required String?  title,
+    required double?  price,
+    required String?  description,
+    required String?  category,
+    required String?  image,
+    required Ratings?  rating,
+    @JsonKey()
+    required int? addedCount,
   }) = _Products;
 
   factory Products.fromJson(Map<String, dynamic> json) => _$ProductsFromJson(json);

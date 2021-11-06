@@ -38,10 +38,6 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
     });
     SchedulerBinding.instance!.addPostFrameCallback((_) {
       developer.log(currentScreen , name: "SchedulerBinding");
-      SplayTreeMap  _receivedProducts = context.read(productListProvider.notifier).cartProductsMap;
-      List<Products>  _receivedProducts2 = context.read(productListProvider.notifier).getProductsFromCart;
-      context.read(cartProductsNotifier.notifier).addAllProducts(_receivedProducts, _receivedProducts2);
-      updateCart();
     });
     super.initState();
   }
@@ -113,16 +109,6 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
     );
   }
 
-  void updateCart(){
-    List<SavedProducts> savedProducts = context.read(cartProductsNotifier.notifier).savedProductsInCart;
-    int totalItemCount = 0;
-    for(SavedProducts current in savedProducts){
-      totalItemCount = totalItemCount + current.count!;
-    }
-    setState(() {
-      counter = totalItemCount;
-    });
-  }
 
   Widget handleReponse(List<SavedProducts>? list, BuildContext context){
     return (list == null) || list.isEmpty ?
@@ -195,12 +181,11 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
                       developer.log(currentScreen , name :"increment Count was selected.");
                       SavedProducts savedProducts = new SavedProducts(count, currentProduct);
                       context.read(cartProductsNotifier.notifier).changeProductCount(currentProduct, true);
-                      updateCart();
+
                     },
                     decrementCountSelected: (count){
                       developer.log(currentScreen , name :"decrement Count was selected.");
                       context.read(cartProductsNotifier.notifier).changeProductCount(currentProduct, false);
-                      updateCart();
                     },
                     initialCount: productCount,
                   ),
