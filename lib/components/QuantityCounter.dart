@@ -12,8 +12,8 @@ class QuantityCounter extends ConsumerWidget {
     this.decrementCountSelected,
   }) : super(key: key);
 
-  final VoidCallback? incrementCountSelected;
-  final VoidCallback? decrementCountSelected;
+  final Function(int?)? incrementCountSelected;
+  final Function(int?)? decrementCountSelected;
 
   @override
   Widget build(BuildContext context, ScopedReader watch) {
@@ -23,7 +23,7 @@ class QuantityCounter extends ConsumerWidget {
         QtyButton(
           tap: () {
             context.read(counterProvider.notifier).decrement();
-            decrementCountSelected!();
+            decrementCountSelected!(context.read(counterProvider.notifier).count);
           },
           text: '-',
         ),
@@ -42,7 +42,7 @@ class QuantityCounter extends ConsumerWidget {
         QtyButton(
           tap: () {
             context.read(counterProvider.notifier).increment();
-            incrementCountSelected!();
+            incrementCountSelected!(context.read(counterProvider.notifier).count);
           },
           text: '+',
         )

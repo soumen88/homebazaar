@@ -22,7 +22,6 @@ class ProductListingNotifierBloc extends StateNotifier<AsyncValue<List<Products>
   List<Products> get getProductsFromCart => cartProducts;
   ProductListingNotifierBloc() : super(AsyncData(null)){
     _streamController = new StreamController();
-    getProductsFromServer();
   }
 
   int? filterOn = 5;
@@ -111,8 +110,8 @@ class ProductListingNotifierBloc extends StateNotifier<AsyncValue<List<Products>
     developer.log(currentScreen , name : "Current product added to cart ${products.id}");
   }
 
-  void getProductsfromCart(){
-
+  void getSavedProductsfromCart(){
+    state = AsyncData(cartProducts);
     developer.log(currentScreen , name : "Current product added to cart ${cartProducts.length}");
   }
 }

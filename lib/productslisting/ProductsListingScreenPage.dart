@@ -1,5 +1,6 @@
 import 'package:auto_route/src/router/auto_router_x.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homebazaar/AppConfig.dart';
 import 'package:homebazaar/productslisting/ProductListingNotifierBloc.dart';
@@ -19,6 +20,22 @@ class ProductsListingScreenPage extends StatefulWidget {
 
 class ProductListingState extends State<ProductsListingScreenPage>{
   int counter = 0;
+  ScrollController? _scrollController;
+  bool isApiCallinProgress = false;
+
+
+  @override
+  void initState() {
+    SchedulerBinding.instance!.addPostFrameCallback((_) {
+      developer.log(currentScreen , name: "SchedulerBinding");
+      context.read(productListProvider.notifier).getProductsFromServer();
+
+    });
+    developer.log(currentScreen, name : "Adding scroll listener");
+    _scrollController = new ScrollController();
+    addScrollListener();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,19 +43,44 @@ class ProductListingState extends State<ProductsListingScreenPage>{
       appBar: AppBar(
         title: Text("Product Listing here"),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.shopping_cart,
-              color: Colors.white,
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0, top: 8.0),
+            child: GestureDetector(
+              child: Stack(
+                alignment: Alignment.topCenter,
+                children: <Widget>[
+                  Icon(
+                    Icons.shopping_cart,
+                    size: 36.0,
+                  ),
+                  if (counter > 0)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 2.0),
+                      child: CircleAvatar(
+                        radius: 8.0,
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                        child: Text(
+                          counter.toString(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              onTap: () {
+                removeListener();
+                context.router.navigate(CartProductScreenRoute());
+              },
             ),
-            onPressed: () {
-              context.router.navigate(CartProductScreenRoute());
-            },
-          )
-
+          ),
         ],
       ),
       body: SingleChildScrollView(
+        controller: _scrollController!,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -50,8 +92,7 @@ class ProductListingState extends State<ProductsListingScreenPage>{
                   return Container(
                     child: futureProducts.when(
                         data: (data) {
-                          counter++;
-                          //streamController = new StreamController();
+                          isApiCallinProgress = false;
                           return handleReponse(data, context);
                         },
                         loading: () {
@@ -81,6 +122,14 @@ class ProductListingState extends State<ProductsListingScreenPage>{
     );
   }
 
+  void removeListener(){
+    Future.delayed(Duration(milliseconds: 1000), () {
+      developer.log(currentScreen, name : "Removing listeners");
+      _scrollController!.dispose();
+      _scrollController = null;
+    });
+  }
+
   Widget handleReponse(List<Products>? list, BuildContext context){
     return list == null ?
     Center(
@@ -91,6 +140,7 @@ class ProductListingState extends State<ProductsListingScreenPage>{
       children: [
         Text("Product Listing will be done here ${list.length} with counter ${counter}"),
         ListView.builder(
+
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           scrollDirection: Axis.vertical,
@@ -140,7 +190,10 @@ class ProductListingState extends State<ProductsListingScreenPage>{
                 TextButton(
                   child: Text(AppConfig.ADD_TO_CART),
                   onPressed: () {
-                    //context.read(productListProvider.notifier).addProductToCart(currentProduct);
+                    context.read(productListProvider.notifier).addProductToCart(currentProduct);
+                    setState(() {
+                      counter++;
+                    });
 
                   },
                 ),
@@ -179,4 +232,23 @@ class ProductListingState extends State<ProductsListingScreenPage>{
       context.read(productListProvider.notifier).orderAscending();
     }
   }
+
+  void addScrollListener(){
+    developer.log(currentScreen, name : "Adding scroll listener");
+      if(_scrollController != null){
+        _scrollController!
+          ..addListener(() {
+            var triggerFetchMoreSize =
+                0.9 * _scrollController!.position.maxScrollExtent;
+
+            if (_scrollController!.position.pixels > triggerFetchMoreSize && !isApiCallinProgress) {
+              isApiCallinProgress = true;
+              developer.log(currentScreen, name : "Fetch more products now");
+              context.read(productListProvider.notifier).getProductsFromServer();
+            }
+          });
+      }
+
+    }
+
 }

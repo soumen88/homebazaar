@@ -1,56 +1,17 @@
-import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:homebazaar/cart/CartProducts.dart';
 
-import 'Dish.dart';
+part 'Cart.g.dart';
 
-class Cart extends StatefulWidget {
-  final List<Dish> _cart;
+@JsonSerializable()
+class Cart {
+  int? userId;
+  String? date;
+  List<CartProducts>? products;
 
-  Cart(this._cart);
+  Cart(this.userId, this.date, this.products);
 
-  @override
-  _CartState createState() => _CartState(this._cart);
-}
+  factory Cart.fromJson(Map<String, dynamic> json) => _$CartFromJson(json);
 
-class _CartState extends State<Cart> {
-  _CartState(this._cart);
-
-  List<Dish> _cart;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Cart'),
-      ),
-      body: ListView.builder(
-          itemCount: _cart.length,
-          itemBuilder: (context, index) {
-            var item = _cart[index];
-            return Padding(
-              padding:
-              const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-              child: Card(
-                elevation: 4.0,
-                child: ListTile(
-                  leading: Icon(
-                    item.icon,
-                    color: item.color,
-                  ),
-                  title: Text(item.name!),
-                  trailing: GestureDetector(
-                      child: Icon(
-                        Icons.remove_circle,
-                        color: Colors.red,
-                      ),
-                      onTap: () {
-                        setState(() {
-                          _cart.remove(item);
-                        });
-                      }),
-                ),
-              ),
-            );
-          }),
-    );
-  }
+  Map<String, dynamic> toJson() => _$CartToJson(this);
 }

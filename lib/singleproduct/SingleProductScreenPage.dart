@@ -150,11 +150,11 @@ class _SingleProductListingScreenState extends State<SingleProductScreenPage> {
                   Flexible(fit: FlexFit.tight, child: SizedBox()),
 
                   QuantityCounter(
-                    incrementCountSelected: () {
+                    incrementCountSelected: (count) {
                       developer.log(currentScreen , name :"increment Count was selected.");
 
                     },
-                    decrementCountSelected: (){
+                    decrementCountSelected: (count){
                       developer.log(currentScreen , name :"decrement Count was selected.");
                     },
                   ),

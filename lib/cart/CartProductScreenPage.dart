@@ -1,9 +1,16 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:homebazaar/cart/Cart.dart';
-import 'package:homebazaar/cart/Dish.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:homebazaar/cart/SavedProducts.dart';
+import 'package:homebazaar/components/BuyButton.dart';
+import 'package:homebazaar/components/QuantityCounter.dart';
+import 'package:homebazaar/productslisting/Products.dart';
 import 'package:homebazaar/providers/Providers.dart';
 import 'dart:developer' as developer;
+
+import '../AppConfig.dart';
 class CartProductScreenPage extends StatefulWidget {
   const CartProductScreenPage({Key? key}) : super(key: key);
 
@@ -12,27 +19,29 @@ class CartProductScreenPage extends StatefulWidget {
 }
 
 class _CartProductScreenPageState extends State<CartProductScreenPage> {
-  List<Dish>? _dishes = [];
-
-  List<Dish>? _cartList =[];
-
+  String currentScreen = "CartProductScreenPage";
+  int counter = 0;
+  List<Products>? _products = [];
+  SplayTreeMap treeMap = new SplayTreeMap<int, String>();
+  ScrollController _cartScrollController = new ScrollController();
   @override
   void initState() {
-    String currentScreen = "CartProductScreenPage";
+
 
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       developer.log(currentScreen , name: "WidgetsBinding");
     });
     SchedulerBinding.instance!.addPostFrameCallback((_) {
       developer.log(currentScreen , name: "SchedulerBinding");
+      context.read(productListProvider.notifier).getSavedProductsfromCart();
 
     });
-    _populateDishes();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Cart"),
@@ -47,7 +56,7 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
                     Icons.shopping_cart,
                     size: 36.0,
                   ),
-                  if (_cartList!.length > 0)
+                  if (counter > 0)
                     Padding(
                       padding: const EdgeInsets.only(left: 2.0),
                       child: CircleAvatar(
@@ -55,7 +64,7 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
                         backgroundColor: Colors.red,
                         foregroundColor: Colors.white,
                         child: Text(
-                          _cartList!.length.toString(),
+                          counter.toString(),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 12.0,
@@ -66,166 +75,131 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
                 ],
               ),
               onTap: () {
-                if (_cartList!.isNotEmpty)
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => Cart(_cartList!),
-                    ),
-                  );
+
               },
             ),
           )
         ],
       ),
-      body: _buildGridView(),
+      body: SingleChildScrollView(
+        controller: _cartScrollController,
+        child: Center(
+          child: Consumer(builder: (context,watch, child) {
+            final futureProducts = watch(productListProvider);
+            return Container(
+              child: futureProducts.when(
+                  data: (data) {
+                    _products!.clear();
+                    _products = data;
+                    //return Text("Found ${_products!.length} in the cart");
+                    return handleReponse(_products, context);
+                  },
+                  loading: () {
+                    return Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        child: Center(child: CircularProgressIndicator())
+                    );
+                  },
+                  error: (e, st) =>  Text("Something went wrong")
+              ),
+            );
+          },
+          ),
+        ),
+      ),
+      bottomNavigationBar: BuyButton(tap: ()  {
+        developer.log(currentScreen , name : "Buy button was tapped");
+        prepareCheckoutcart();
+      }),
     );
   }
 
-  ListView _buildListView() {
-    return ListView.builder(
-      itemCount: _dishes!.length,
-      itemBuilder: (context, index) {
-        var item = _dishes![index];
-        return Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 8.0,
-            vertical: 2.0,
-          ),
-          child: Card(
-            elevation: 4.0,
-            child: ListTile(
-              leading: Icon(
-                item.icon,
-                color: item.color,
-              ),
-              title: Text(item.name!),
-              trailing: GestureDetector(
-                child: (!_cartList!.contains(item))
-                    ? Icon(
-                  Icons.add_circle,
-                  color: Colors.green,
-                )
-                    : Icon(
-                  Icons.remove_circle,
-                  color: Colors.red,
-                ),
-                onTap: () {
-                  setState(() {
-                    if (!_cartList!.contains(item))
-                      _cartList!.add(item);
-                    else
-                      _cartList!.remove(item);
-                  });
-                },
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  GridView _buildGridView() {
-    return GridView.builder(
-        padding: const EdgeInsets.all(4.0),
-        gridDelegate:
-        SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-        itemCount: _dishes!.length,
-        itemBuilder: (context, index) {
-          var item = _dishes![index];
-          return Card(
-              elevation: 4.0,
-              child: Stack(
-                fit: StackFit.loose,
-                alignment: Alignment.center,
-                children: <Widget>[
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(
-                        item.icon,
-                        color: (_cartList!.contains(item))
-                            ? Colors.grey
-                            : item.color,
-                        size: 100.0,
-                      ),
-                      Text(
-                        item.name!,
-                        textAlign: TextAlign.center,
-                      )
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 8.0,
-                      bottom: 8.0,
-                    ),
-                    child: Align(
-                      alignment: Alignment.bottomRight,
-                      child: GestureDetector(
-                        child: (!_cartList!.contains(item))
-                            ? Icon(
-                          Icons.add_circle,
-                          color: Colors.green,
-                        )
-                            : Icon(
-                          Icons.remove_circle,
-                          color: Colors.red,
-                        ),
-                        onTap: () {
-                          setState(() {
-                            if (!_cartList!.contains(item))
-                              _cartList!.add(item);
-                            else
-                              _cartList!.remove(item);
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ));
-        });
-  }
-
-  void _populateDishes() {
-    var list = <Dish>[
-      Dish(
-        name: 'Chicken Zinger',
-        icon: Icons.fastfood,
-        color: Colors.amber,
-      ),
-      Dish(
-        name: 'Chicken Zinger without chicken',
-        icon: Icons.print,
-        color: Colors.deepOrange,
-      ),
-      Dish(
-        name: 'Rice',
-        icon: Icons.child_care,
-        color: Colors.brown,
-      ),
-      Dish(
-        name: 'Beef burger without beef',
-        icon: Icons.whatshot,
-        color: Colors.green,
-      ),
-      Dish(
-        name: 'Laptop without OS',
-        icon: Icons.laptop,
-        color: Colors.purple,
-      ),
-      Dish(
-        name: 'Mac wihout macOS',
-        icon: Icons.laptop_mac,
-        color: Colors.blueGrey,
-      ),
-    ];
-
+  void updateCart(){
     setState(() {
-      _dishes = list;
+      counter = _products!.length;
     });
   }
 
+  Widget handleReponse(List<Products>? list, BuildContext context){
+    return list == null ?
+    Center(
+      child: CircularProgressIndicator(),
+    )
+        :
+    Column(
+      children: [
+        Text("Product Listing will be done here ${list.length} with counter ${counter}"),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          scrollDirection: Axis.vertical,
+          itemCount: list.length,
+          itemBuilder: (BuildContext context, int index) {
+            Products currentProduct = list[index];
+            return buildCard(currentProduct);
+          },
+        ),
+      ],
+    );
+  }
+
+  Card buildCard(Products currentProduct) {
+    String heading = currentProduct.title!;
+    String count = "Available Pieces: " + currentProduct.rating!.count.toString();
+    String cardUrl = currentProduct.image!;
+    var supportingText = "Category: " + currentProduct.id!.toString();
+    return Card(
+        elevation: 4.0,
+        child: Column(
+          children: [
+            ListTile(
+              title: Text(heading),
+              trailing: Icon(Icons.favorite_outline),
+            ),
+            Container(
+              height: 200.0,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.network(
+                  cardUrl,
+                  height: 150.0,
+                  width: 100.0,
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('${count}'),
+
+                  Flexible(fit: FlexFit.tight, child: SizedBox()),
+
+                  QuantityCounter(
+                    incrementCountSelected: (count) {
+                      developer.log(currentScreen , name :"increment Count was selected.");
+                      SavedProducts savedProducts = new SavedProducts(count, currentProduct);
+                      treeMap[currentProduct.id] = savedProducts;
+                    },
+                    decrementCountSelected: (count){
+                      developer.log(currentScreen , name :"decrement Count was selected.");
+                    },
+                  ),
+                ],
+              ) ,
+            ),
+          ],
+        ));
+  }
+
+  void prepareCheckoutcart(){
+    treeMap.forEach((key, value){
+      developer.log(currentScreen ,name: "Value $value");
+    });
+    //context.read(productListProvider.notifier).getSavedProductsfromCart();
+  }
 
 }
