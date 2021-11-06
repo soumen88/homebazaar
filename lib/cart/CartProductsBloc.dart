@@ -23,13 +23,20 @@ class CartProductsBloc extends ChangeNotifier{
     notifyListeners();
   }
 
-  void changeProductCount(Products products){
+  void changeProductCount(Products products, bool isAdded){
     int counter = 0;
     for(SavedProducts currentProduct in savedProductsInCart){
-      if(currentProduct.product.id! == products.id! ){
-        savedProductsInCart.removeAt(counter);
-        currentProduct.count = currentProduct.count! + 1 ;
-        savedProductsInCart.insert(counter, currentProduct);
+      if(currentProduct.product.id! == products.id!){
+        if(isAdded){
+          savedProductsInCart.removeAt(counter);
+          currentProduct.count = currentProduct.count! + 1 ;
+          savedProductsInCart.insert(counter, currentProduct);
+        }
+        if(!isAdded && currentProduct.count! > 1){
+          savedProductsInCart.removeAt(counter);
+          currentProduct.count = currentProduct.count! - 1 ;
+          savedProductsInCart.insert(counter, currentProduct);
+        }
       }
       counter++;
     }
