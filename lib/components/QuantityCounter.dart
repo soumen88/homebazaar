@@ -1,7 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homebazaar/AppConfig.dart';
+import 'package:homebazaar/components/QuantityBloc.dart';
 import 'package:homebazaar/providers/Providers.dart';
+import 'dart:developer' as developer;
+
 
 
 class QuantityCounter extends ConsumerWidget {
@@ -10,14 +14,25 @@ class QuantityCounter extends ConsumerWidget {
     Key? key,
     this.incrementCountSelected,
     this.decrementCountSelected,
+    @PathParam() required this.initialCount,
   }) : super(key: key);
+
 
   final Function(int?)? incrementCountSelected;
   final Function(int?)? decrementCountSelected;
-
+  int initialCount;
+  bool isValueSet = false;
+  String currentScreen = "Quantity Counter";
   @override
   Widget build(BuildContext context, ScopedReader watch) {
+    if(!isValueSet){
+      isValueSet = true;
+      watch(counterProvider).count = initialCount;
+    }
+
     final count = watch(counterProvider).count;
+    developer.log(currentScreen, name : "Found initial count $initialCount");
+
     return Row(
       children: [
         QtyButton(

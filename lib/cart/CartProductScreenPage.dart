@@ -27,7 +27,7 @@ class CartProductScreenPage extends StatefulWidget {
 class _CartProductScreenPageState extends State<CartProductScreenPage> {
   String currentScreen = "CartProductScreenPage";
   int counter = 0;
-  List<Products>? _products = [];
+  List<SavedProducts>? _products = [];
   //List<Products>? _receivedProducts = [];
   SplayTreeMap treeMap = new SplayTreeMap<int, String>();
   @override
@@ -39,8 +39,9 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
     });
     SchedulerBinding.instance!.addPostFrameCallback((_) {
       developer.log(currentScreen , name: "SchedulerBinding");
-      List<Products>? _receivedProducts = context.read(productListProvider.notifier).cartProducts;
-      context.read(cartProductsNotifier.notifier).addAllProducts(_receivedProducts);
+      SplayTreeMap  _receivedProducts = context.read(productListProvider.notifier).cartProductsMap;
+      List<Products>  _receivedProducts2 = context.read(productListProvider.notifier).getProductsFromCart;
+      context.read(cartProductsNotifier.notifier).addAllProducts(_receivedProducts, _receivedProducts2);
     });
     super.initState();
   }
@@ -92,7 +93,7 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
         body: SingleChildScrollView(
           child: Center(
             child: Consumer(builder: (context,watch, child) {
-              final futureProducts = watch(cartProductsNotifier).currentProductsInCart;
+              final futureProducts = watch(cartProductsNotifier).savedProductsInCart;
               _products!.clear();
               _products!.addAll(futureProducts);
               return Container(
@@ -116,7 +117,7 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
     });
   }
 
-  Widget handleReponse(List<Products>? list, BuildContext context){
+  Widget handleReponse(List<SavedProducts>? list, BuildContext context){
     return list == null ?
     Center(
       child: CircularProgressIndicator(),
@@ -131,15 +132,16 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
           scrollDirection: Axis.vertical,
           itemCount: list.length,
           itemBuilder: (BuildContext context, int index) {
-            Products currentProduct = list[index];
-            return buildCard(currentProduct);
+            Products currentProduct = list[index].product;
+            int productCount = list[index].count!;
+            return buildCard(currentProduct, productCount);
           },
         ),
       ],
     );
   }
 
-  Card buildCard(Products currentProduct) {
+  Card buildCard(Products currentProduct, int productCount) {
     String heading = currentProduct.title!;
     String count = "Available Pieces: " + currentProduct.rating!.count.toString();
     String cardUrl = currentProduct.image!;
@@ -173,15 +175,16 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
 
                   Flexible(fit: FlexFit.tight, child: SizedBox()),
 
-                  QuantityCounter(
+                  new QuantityCounter(
                     incrementCountSelected: (count) {
                       developer.log(currentScreen , name :"increment Count was selected.");
                       SavedProducts savedProducts = new SavedProducts(count, currentProduct);
-                      treeMap[currentProduct.id] = savedProducts;
+                      //treeMap[currentProduct.id] = savedProducts;
                     },
                     decrementCountSelected: (count){
                       developer.log(currentScreen , name :"decrement Count was selected.");
                     },
+                    initialCount: productCount,
                   ),
                 ],
               ) ,

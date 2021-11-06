@@ -157,6 +157,7 @@ class _SingleProductListingScreenState extends State<SingleProductScreenPage> {
                     decrementCountSelected: (count){
                       developer.log(currentScreen , name :"decrement Count was selected.");
                     },
+                    initialCount: 5,
                   ),
                 ],
               ) ,

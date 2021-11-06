@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class QuantityBloc extends ChangeNotifier {
   int count = 0;
   // 1
-  QuantityBloc([this.count = 0]);
+  QuantityBloc();
 
   // 2
   void increment() {
