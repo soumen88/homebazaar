@@ -1,6 +1,7 @@
 
 import 'package:auto_route/annotations.dart';
 import 'package:homebazaar/cart/CartProductScreenPage.dart';
+import 'package:homebazaar/checkout/CheckOutScreenPage.dart';
 import 'package:homebazaar/login/LoginScreenPage.dart';
 import 'package:homebazaar/filters/FilterProductsScreenPage.dart';
 import 'package:homebazaar/productslisting/ProductsListingScreenPage.dart';
@@ -54,6 +55,13 @@ import 'package:homebazaar/splashscreen/SplashScreenPage.dart';
       AutoRoute(
         path: "/cartProducts",
         page: CartProductScreenPage,
+        children: [
+          RedirectRoute(path: '*', redirectTo: ''),
+        ]
+      ),
+      AutoRoute(
+        path: "/checkoutscreen",
+        page: CheckOutScreenPage,
         children: [
           RedirectRoute(path: '*', redirectTo: ''),
         ]

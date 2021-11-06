@@ -10,6 +10,7 @@ import 'package:homebazaar/components/NavBar.dart';
 import 'package:homebazaar/components/QuantityCounter.dart';
 import 'package:homebazaar/productslisting/Products.dart';
 import 'package:homebazaar/providers/Providers.dart';
+import 'package:homebazaar/routes/AppRouter.gr.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'dart:developer' as developer;
 
@@ -163,10 +164,7 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
   }
 
   void prepareCheckoutcart(){
-    treeMap.forEach((key, value){
-      developer.log(currentScreen ,name: "Value $value");
-    });
-    //context.read(productListProvider.notifier).getSavedProductsfromCart();
+    context.router.push(CheckOutScreenRoute());
   }
   Future<bool> _onWillPop()  async {
 
