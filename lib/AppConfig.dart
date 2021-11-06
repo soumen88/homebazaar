@@ -6,6 +6,7 @@ class AppConfig{
   static String BASE_URL = "https://fakestoreapi.com";
   static String ADD_TO_CART = "Add to Cart";
   static String LEARN_MORE = "Learn More";
+  static String LOGIN_SUCCESS_KEY = "LoginSuccess";
   static var black = Color(0xFF2F2F3E);
   static var bodyColor = Color(0xFF6F8398);
   static var kPrimaryColor = Color(0xFF4F4F4F);

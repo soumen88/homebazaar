@@ -9,9 +9,15 @@ import 'package:homebazaar/login/User.dart';
 import 'package:homebazaar/login/UserDetails.dart';
 import 'dart:developer' as developer;
 
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../AppConfig.dart';
+
 class UserAuthenticateBloc extends StateNotifier<AsyncValue<bool>>{
   String currentScreen = "UserAuthentication";
-  UserAuthenticateBloc() : super(AsyncData(false));
+  UserAuthenticateBloc() : super(AsyncData(false))  {
+    isFirstTimeLogin();
+  }
 
 
   void hitServerForRegistration(String email, String username, String password) async{
@@ -62,6 +68,20 @@ class UserAuthenticateBloc extends StateNotifier<AsyncValue<bool>>{
     bool hasMinLength = password.length > minLength;
 
     return hasDigits & hasLowercase & hasMinLength;
+  }
+
+  void isFirstTimeLogin() async{
+    state = AsyncLoading();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return String
+    String? isLoginDone = prefs.getString(AppConfig.LOGIN_SUCCESS_KEY);
+    developer.log(currentScreen, name: "Shared preferences key ${isLoginDone}");
+    if(isLoginDone != null && isLoginDone.isNotEmpty){
+      state = AsyncData(true);
+    }
+    else{
+      state = AsyncData(false);
+    }
   }
 
 }
