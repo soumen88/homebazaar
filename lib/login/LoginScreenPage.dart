@@ -192,7 +192,9 @@ class LoginScreenPage extends ConsumerWidget {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(AppConfig.LOGIN_SUCCESS_KEY, "Success");
-    context.router.navigate(ProductsListingScreenRoute());
+    context.router.replace(ProductsListingScreenRoute());
+
+
   }
 
   Future<String?> _getLoginDetailsSF() async {

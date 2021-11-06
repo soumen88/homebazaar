@@ -22,16 +22,21 @@ class ProductListingState extends State<ProductsListingScreenPage>{
   int counter = 0;
   ScrollController? _scrollController;
   bool isApiCallinProgress = false;
-
+  bool isScrollListnerAdded = false;
+  Function()? listener;
 
   @override
   void initState() {
     SchedulerBinding.instance!.addPostFrameCallback((_) {
       developer.log(currentScreen , name: "SchedulerBinding");
       context.read(productListProvider.notifier).getProductsFromServer();
+    });
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      developer.log(currentScreen , name: "WidgetsBinding");
 
     });
     developer.log(currentScreen, name : "Adding scroll listener");
+
     _scrollController = new ScrollController();
     addScrollListener();
     super.initState();
@@ -73,19 +78,27 @@ class ProductListingState extends State<ProductsListingScreenPage>{
               ),
               onTap: () {
                 removeListener();
-                context.router.navigate(CartProductScreenRoute());
+                context.router.push(CartProductScreenRoute(cartClosed:() {
+                  developer.log(currentScreen, name : "Cart closed invoked");
+                  _scrollController = new ScrollController();
+                  isScrollListnerAdded = false;
+                  addScrollListener();
+                }));
               },
             ),
           ),
         ],
       ),
       body: SingleChildScrollView(
-        controller: _scrollController!,
+        controller:  _scrollController,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
+              ElevatedButton(onPressed: (){
+                addScrollListener();
+              }, child: Text("Check")),
               Consumer(
                 builder: (context, watch, child) {
                   final futureProducts = watch(productListProvider);
@@ -122,12 +135,19 @@ class ProductListingState extends State<ProductsListingScreenPage>{
     );
   }
 
+  @override
+  void dispose() {
+    developer.log(currentScreen, name : "Inside dispose");
+    //_audioPlayer?.dispose();
+    super.dispose();
+  }
   void removeListener(){
     Future.delayed(Duration(milliseconds: 1000), () {
       developer.log(currentScreen, name : "Removing listeners");
       _scrollController!.dispose();
       _scrollController = null;
     });
+
   }
 
   Widget handleReponse(List<Products>? list, BuildContext context){
@@ -234,21 +254,25 @@ class ProductListingState extends State<ProductsListingScreenPage>{
   }
 
   void addScrollListener(){
-    developer.log(currentScreen, name : "Adding scroll listener");
-      if(_scrollController != null){
-        _scrollController!
-          ..addListener(() {
-            var triggerFetchMoreSize =
-                0.9 * _scrollController!.position.maxScrollExtent;
+      try {
 
-            if (_scrollController!.position.pixels > triggerFetchMoreSize && !isApiCallinProgress) {
-              isApiCallinProgress = true;
-              developer.log(currentScreen, name : "Fetch more products now");
-              context.read(productListProvider.notifier).getProductsFromServer();
-            }
+        if(isScrollListnerAdded == false && !_scrollController!.hasClients && !_scrollController!.hasListeners){
+          isScrollListnerAdded = true;
+          developer.log(currentScreen, name : "Adding scroll listener");
+          _scrollController!..addListener(() {
+              var triggerFetchMoreSize =
+                  0.9 * _scrollController!.position.maxScrollExtent;
+
+              if (_scrollController!.position.pixels > triggerFetchMoreSize && !isApiCallinProgress) {
+                isApiCallinProgress = true;
+                developer.log(currentScreen, name : "Fetch more products now");
+                context.read(productListProvider.notifier).getProductsFromServer();
+              }
           });
+        }
+      } catch (e) {
+        developer.log(currentScreen, name: 'Printing out the message: $e');
       }
-
-    }
+  }
 
 }

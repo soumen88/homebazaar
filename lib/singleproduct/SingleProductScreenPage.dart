@@ -55,7 +55,7 @@ class _SingleProductListingScreenState extends State<SingleProductScreenPage> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Text("We are in the single product listing screen ${widget.selectedProduct} and ${receivedProductsFromServer.length}"),
+                Text("We are in the single product listing screen ${widget.selectedProduct}"),
                 Consumer(
                   builder: (context, watch, child) {
                     final futureProducts = watch(productListProvider);

@@ -10,10 +10,10 @@ import 'package:http/http.dart' as http;
 import 'dart:developer' as developer;
 String currentScreen = "ProductListingBloc";
 
-List<Products> receivedProducts = [];
-List<Products> get receivedProductsFromServer => receivedProducts;
+
 
 class ProductListingNotifierBloc extends StateNotifier<AsyncValue<List<Products>?>>{
+  List<Products> receivedProducts = [];
   StreamController<String>? _streamController;
   StreamController<String> get streamController => _streamController!;
   List<Products> get receivedProductsFromApi => receivedProducts;
@@ -91,6 +91,7 @@ class ProductListingNotifierBloc extends StateNotifier<AsyncValue<List<Products>
 
   void loadPreviousProducts(){
     state = AsyncLoading();
+    developer.log(currentScreen, name: "Previous products found ${receivedProducts.length}");
     state = AsyncData(receivedProducts) ;
   }
 

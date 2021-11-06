@@ -59,8 +59,11 @@ class AppRouter extends _i8.RootStackRouter {
               key: args.key, onSortOrderSelected: args.onSortOrderSelected));
     },
     CartProductScreenRoute.name: (routeData) {
+      final args = routeData.argsAs<CartProductScreenRouteArgs>();
       return _i8.MaterialPageX<dynamic>(
-          routeData: routeData, child: const _i7.CartProductScreenPage());
+          routeData: routeData,
+          child: _i7.CartProductScreenPage(
+              key: args.key, cartClosed: args.cartClosed));
     }
   };
 
@@ -211,9 +214,24 @@ class FilterProductsScreenRouteArgs {
 }
 
 /// generated route for [_i7.CartProductScreenPage]
-class CartProductScreenRoute extends _i8.PageRouteInfo<void> {
-  const CartProductScreenRoute({List<_i8.PageRouteInfo>? children})
-      : super(name, path: '/cartProducts', initialChildren: children);
+class CartProductScreenRoute
+    extends _i8.PageRouteInfo<CartProductScreenRouteArgs> {
+  CartProductScreenRoute(
+      {_i9.Key? key,
+      required void Function() cartClosed,
+      List<_i8.PageRouteInfo>? children})
+      : super(name,
+            path: '/cartProducts',
+            args: CartProductScreenRouteArgs(key: key, cartClosed: cartClosed),
+            initialChildren: children);
 
   static const String name = 'CartProductScreenRoute';
+}
+
+class CartProductScreenRouteArgs {
+  const CartProductScreenRouteArgs({this.key, required this.cartClosed});
+
+  final _i9.Key? key;
+
+  final void Function() cartClosed;
 }
