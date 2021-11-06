@@ -25,21 +25,19 @@ class CartProductsBloc extends ChangeNotifier{
   }
 
   void changeProductCount(Products products, bool isAdded){
-    int counter = 0;
-    for(SavedProducts currentProduct in savedProductsInCart){
-      if(currentProduct.product.id! == products.id!){
-        if(isAdded){
-          savedProductsInCart.removeAt(counter);
-          currentProduct.count = currentProduct.count! + 1 ;
-          savedProductsInCart.insert(counter, currentProduct);
-        }
-        if(!isAdded && currentProduct.count! > 1){
-          savedProductsInCart.removeAt(counter);
-          currentProduct.count = currentProduct.count! - 1 ;
-          savedProductsInCart.insert(counter, currentProduct);
-        }
-      }
-      counter++;
+    int index = savedProductsInCart.indexWhere((element) => element.product.id == products.id);
+    if(index == -1){
+      //element not found
+      developer.log(currentScreen, name: "Element not found hence adding in list");
+      SavedProducts savedProducts = new SavedProducts(1, products);
+      savedProductsInCart.add(savedProducts);
+    }
+    else{
+      developer.log(currentScreen, name: "Element found at index $index in list");
+      SavedProducts savedProducts =  savedProductsInCart.elementAt(index);
+      savedProducts.count = savedProducts.count! + 1;
+      savedProductsInCart.removeAt(index);
+      savedProductsInCart.insert(index, savedProducts);
     }
     notifyListeners();
   }

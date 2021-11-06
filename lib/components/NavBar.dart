@@ -24,6 +24,7 @@ class NavBar extends ConsumerWidget implements PreferredSizeWidget {
     for(SavedProducts current in futureProducts){
       totalItemCount = totalItemCount + current.count!;
     }
+    developer.log(currentScreen, name : "Found total item count $totalItemCount");
     counter = totalItemCount;
     return AppBar(
       title: Text(screenName!),

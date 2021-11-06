@@ -6,6 +6,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homebazaar/cart/SavedProducts.dart';
 import 'package:homebazaar/components/BuyButton.dart';
+import 'package:homebazaar/components/NavBar.dart';
 import 'package:homebazaar/components/QuantityCounter.dart';
 import 'package:homebazaar/productslisting/Products.dart';
 import 'package:homebazaar/providers/Providers.dart';
@@ -48,43 +49,8 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
     return WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
-        appBar: AppBar(
-          title: Text("Cart"),
-          actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(right: 16.0, top: 8.0),
-              child: GestureDetector(
-                child: Stack(
-                  alignment: Alignment.topCenter,
-                  children: <Widget>[
-                    Icon(
-                      Icons.shopping_cart,
-                      size: 36.0,
-                    ),
-                    if (counter > 0)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 2.0),
-                        child: CircleAvatar(
-                          radius: 8.0,
-                          backgroundColor: Colors.red,
-                          foregroundColor: Colors.white,
-                          child: Text(
-                            counter.toString(),
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12.0,
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-                onTap: () {
-
-                },
-              ),
-            )
-          ],
+        appBar: NavBar(
+          screenName: "Cart Products",
         ),
         body: SingleChildScrollView(
           child: Center(

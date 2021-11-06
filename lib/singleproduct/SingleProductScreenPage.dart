@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:homebazaar/AppConfig.dart';
 import 'package:homebazaar/cart/SavedProducts.dart';
 import 'package:homebazaar/components/BuyButton.dart';
+import 'package:homebazaar/components/NavBar.dart';
 import 'package:homebazaar/components/QuantityCounter.dart';
 import 'package:homebazaar/productslisting/ProductListingNotifierBloc.dart';
 import 'package:homebazaar/productslisting/Products.dart';
@@ -54,46 +55,8 @@ class _SingleProductListingScreenState extends State<SingleProductScreenPage> {
       onWillPop: _onWillPop,
 
       child: Scaffold(
-        appBar: AppBar(
-          title: Text("Product Listing here"),
-          actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(right: 16.0, top: 8.0),
-              child: GestureDetector(
-                child: Stack(
-                  alignment: Alignment.topCenter,
-                  children: <Widget>[
-                    Icon(
-                      Icons.shopping_cart,
-                      size: 36.0,
-                    ),
-                    if (counter > 0)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 2.0),
-                        child: CircleAvatar(
-                          radius: 8.0,
-                          backgroundColor: Colors.red,
-                          foregroundColor: Colors.white,
-                          child: Text(
-                            counter.toString(),
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12.0,
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-                onTap: () {
-
-                  context.router.push(CartProductScreenRoute(cartClosed:() {
-                    developer.log(currentScreen, name : "Cart closed invoked");
-                  }));
-                },
-              ),
-            ),
-          ],
+        appBar: NavBar(
+          screenName: "Product Description",
         ),
         body: SafeArea(
           child: SingleChildScrollView(
@@ -102,10 +65,17 @@ class _SingleProductListingScreenState extends State<SingleProductScreenPage> {
                 Consumer(
                   builder: (context, watch, child) {
                     final futureProducts = watch(productListProvider);
+                    final savedProducts = watch(cartProductsNotifier).savedProductsInCart;
+
                     return Container(
                       child: futureProducts.when(
                           data: (data) {
-                            return handleReponse(data!.first);
+
+                            List<SavedProducts> savedProductsList = savedProducts.where((element) => element.product.id! == data!.first.id!).toList();
+                            if(savedProductsList.isNotEmpty){
+                              counter = savedProductsList.first.count!;
+                            }
+                            return handleReponse(data!.first, counter);
                           },
                           loading: () => CircularProgressIndicator(),
                           error: (e, st) =>  Text("Something went wrong")
@@ -122,19 +92,19 @@ class _SingleProductListingScreenState extends State<SingleProductScreenPage> {
     );
   }
 
-  Widget handleReponse(Products? currentProduct) {
+  Widget handleReponse(Products? currentProduct, int productCount) {
     return currentProduct == null ?
     Center(
       child: CircularProgressIndicator(),
     )
         : Column(
       children: [
-        buildCard(currentProduct)
+        buildCard(currentProduct, productCount)
       ],
     );
   }
 
-  Widget buildCard(Products currentProduct) {
+  Widget buildCard(Products currentProduct, int productCount) {
     String heading = currentProduct.title!;
     String rating = currentProduct.rating!.rate!.toString();
     String description = "Product Description: "+ currentProduct.description!;
@@ -216,7 +186,7 @@ class _SingleProductListingScreenState extends State<SingleProductScreenPage> {
                   developer.log(currentScreen , name :"decrement Count was selected.");
                   context.read(cartProductsNotifier.notifier).changeProductCount(currentProduct, false);
                 },
-                initialCount: 5,
+                initialCount: productCount,
               ),
             ],
           ) ,
