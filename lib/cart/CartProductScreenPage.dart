@@ -9,6 +9,7 @@ import 'package:homebazaar/components/BuyButton.dart';
 import 'package:homebazaar/components/QuantityCounter.dart';
 import 'package:homebazaar/productslisting/Products.dart';
 import 'package:homebazaar/providers/Providers.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'dart:developer' as developer;
 
 import '../AppConfig.dart';
@@ -32,8 +33,6 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
   SplayTreeMap treeMap = new SplayTreeMap<int, String>();
   @override
   void initState() {
-
-
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       developer.log(currentScreen , name: "WidgetsBinding");
     });
@@ -125,9 +124,9 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
   }
 
   Widget handleReponse(List<SavedProducts>? list, BuildContext context){
-    return list == null ?
+    return (list == null) || list.isEmpty ?
     Center(
-      child: CircularProgressIndicator(),
+      child: Image.asset('assets/no_product_found.png'),
     )
         :
     Column(
@@ -159,7 +158,15 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
           children: [
             ListTile(
               title: Text(heading),
-              trailing: Icon(Icons.favorite_outline),
+              trailing: InkWell(
+                onTap: (){
+                  displayAlert(productCount);
+                },
+                child: Icon(
+                  Icons.delete,
+                  size: 26.0,
+                ),
+              ),
             ),
             Container(
               height: 200.0,
@@ -217,5 +224,32 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
     widget.cartClosed();
     return Future.value(context.router.removeLast());
 
+  }
+
+  void displayAlert(int count){
+    Alert(
+      context: context,
+      type: AlertType.warning,
+      title: "Delete Product",
+      desc: "Are you sure you want to delete ${count} quantities of this product?",
+      buttons: [
+        DialogButton(
+          child: Text(
+            "Okay",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () => Navigator.pop(context),
+          color: Colors.redAccent
+        ),
+        DialogButton(
+          child: Text(
+            "Cancel",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () => Navigator.pop(context),
+          color: Colors.greenAccent,
+        )
+      ],
+    ).show();
   }
 }

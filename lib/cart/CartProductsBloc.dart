@@ -19,7 +19,6 @@ class CartProductsBloc extends ChangeNotifier{
         savedProductsInCart.add(savedProducts);
       }
     });
-
     notifyListeners();
   }
 

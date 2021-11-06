@@ -91,6 +91,7 @@ flutter:
     - assets/shoe_green.png
     - assets/shoe_pink.png
     - assets/shoe_yellow.png
+    - assets/no_product_found.png
     - assets/images/
     - assets/icons/
   # To add assets to your application, add an assets section, like this:
