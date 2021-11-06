@@ -95,6 +95,11 @@ class ProductListingNotifierBloc extends StateNotifier<AsyncValue<List<Products>
     state = AsyncData(products) ;
   }
 
+  void saveProductDetails(Products displayProduct) async{
+    List<Products> list = [displayProduct];
+    state = AsyncData(list) ;
+  }
+
   void loadPreviousProducts(){
     state = AsyncLoading();
     developer.log(currentScreen, name: "Previous products found ${receivedProducts.length}");

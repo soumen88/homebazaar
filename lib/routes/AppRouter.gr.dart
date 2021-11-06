@@ -14,6 +14,7 @@ import 'package:flutter/material.dart' as _i9;
 import '../cart/CartProductScreenPage.dart' as _i7;
 import '../filters/FilterProductsScreenPage.dart' as _i6;
 import '../login/LoginScreenPage.dart' as _i2;
+import '../productslisting/Products.dart' as _i10;
 import '../productslisting/ProductsListingScreenPage.dart' as _i4;
 import '../registration/RegistrationScreenPage.dart' as _i3;
 import '../singleproduct/SingleProductScreenPage.dart' as _i5;
@@ -47,7 +48,7 @@ class AppRouter extends _i8.RootStackRouter {
           routeData: routeData,
           child: _i5.SingleProductScreenPage(
               key: args.key,
-              selectedProduct: args.selectedProduct,
+              displayProduct: args.displayProduct,
               onRateBook: args.onRateBook));
     },
     FilterProductsScreenRoute.name: (routeData) {
@@ -163,16 +164,16 @@ class SingleProductScreenRoute
     extends _i8.PageRouteInfo<SingleProductScreenRouteArgs> {
   SingleProductScreenRoute(
       {_i9.Key? key,
-      required int selectedProduct,
+      required _i10.Products displayProduct,
       required void Function(int) onRateBook,
       List<_i8.PageRouteInfo>? children})
       : super(name,
             path: ':selectedProduct',
             args: SingleProductScreenRouteArgs(
                 key: key,
-                selectedProduct: selectedProduct,
+                displayProduct: displayProduct,
                 onRateBook: onRateBook),
-            rawPathParams: {'selectedProduct': selectedProduct},
+            rawPathParams: {},
             initialChildren: children);
 
   static const String name = 'SingleProductScreenRoute';
@@ -180,11 +181,11 @@ class SingleProductScreenRoute
 
 class SingleProductScreenRouteArgs {
   const SingleProductScreenRouteArgs(
-      {this.key, required this.selectedProduct, required this.onRateBook});
+      {this.key, required this.displayProduct, required this.onRateBook});
 
   final _i9.Key? key;
 
-  final int selectedProduct;
+  final _i10.Products displayProduct;
 
   final void Function(int) onRateBook;
 }

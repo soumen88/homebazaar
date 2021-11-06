@@ -96,9 +96,7 @@ class ProductListingState extends State<ProductsListingScreenPage>{
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              ElevatedButton(onPressed: (){
-                addScrollListener();
-              }, child: Text("Check")),
+
               Consumer(
                 builder: (context, watch, child) {
                   final futureProducts = watch(productListProvider);
@@ -158,7 +156,6 @@ class ProductListingState extends State<ProductsListingScreenPage>{
         :
     Column(
       children: [
-        Text("Product Listing will be done here ${list.length} with counter ${counter}"),
         ListView.builder(
 
           shrinkWrap: true,
@@ -178,14 +175,18 @@ class ProductListingState extends State<ProductsListingScreenPage>{
     String heading = currentProduct.title!;
     String rating = "Rating: " + currentProduct.rating!.rate!.toString();
     String cardUrl = currentProduct.image!;
-    //var supportingText = "Category: " + currentProduct.category!;
-    var supportingText = "Category: " + currentProduct.id!.toString();
+    String price = "Price \$." + currentProduct.price!.toString();
+    var supportingText = "Category: " + currentProduct.category!;
+    //var supportingText = "Category: " + currentProduct.id!.toString();
     return Card(
         elevation: 4.0,
         child: Column(
           children: [
             ListTile(
-              title: Text(heading),
+              title: Text(heading,
+                  style: TextStyle(
+                  fontSize: 22.0,
+              )),
               subtitle: Text(rating),
               trailing: Icon(Icons.favorite_outline),
             ),
@@ -200,10 +201,25 @@ class ProductListingState extends State<ProductsListingScreenPage>{
                 ),
               ),
             ),
-            Container(
-              padding: EdgeInsets.all(16.0),
-              alignment: Alignment.center,
-              child: Text(supportingText),
+            Padding(
+              padding: EdgeInsets.all(16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    price,
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+
+                  Flexible(fit: FlexFit.tight, child: SizedBox()),
+
+
+                ],
+              ) ,
             ),
             ButtonBar(
               children: [
@@ -222,11 +238,13 @@ class ProductListingState extends State<ProductsListingScreenPage>{
                   onPressed: () {
                     context.router.push(
                       SingleProductScreenRoute(
-                          selectedProduct: currentProduct.id!,
                           onRateBook: (rating) {
                             // handle result
                             developer.log(currentScreen, name: "Callback received $rating");
-                          }),
+                          },
+                          displayProduct: currentProduct
+                      ),
+
                     );
                     //context.router.navigate(SingleProductScreenRoute(selectedProduct: currentProduct.id!));
                   },
@@ -266,7 +284,7 @@ class ProductListingState extends State<ProductsListingScreenPage>{
               if (_scrollController!.position.pixels > triggerFetchMoreSize && !isApiCallinProgress) {
                 isApiCallinProgress = true;
                 developer.log(currentScreen, name : "Fetch more products now");
-                context.read(productListProvider.notifier).getProductsFromServer();
+                //context.read(productListProvider.notifier).getProductsFromServer();
               }
           });
         }

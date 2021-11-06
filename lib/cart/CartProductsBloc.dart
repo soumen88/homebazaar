@@ -5,10 +5,12 @@ import 'package:homebazaar/cart/SavedProducts.dart';
 import 'package:homebazaar/productslisting/Products.dart';
 import 'dart:developer' as developer;
 class CartProductsBloc extends ChangeNotifier{
+
   List<Products> currentProductsInCart = [];
   SplayTreeMap currentProductsMapInCart = new SplayTreeMap<int, List<Products>>();
   List<SavedProducts> savedProductsInCart = [];
   String currentScreen = "CartProductsBloc";
+
   void addAllProducts(SplayTreeMap productList, List<Products> productsReceived){
     currentProductsInCart = List.from(productsReceived);
     currentProductsMapInCart = SplayTreeMap.from(productList);
