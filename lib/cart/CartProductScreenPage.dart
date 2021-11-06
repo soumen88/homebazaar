@@ -179,10 +179,12 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
                     incrementCountSelected: (count) {
                       developer.log(currentScreen , name :"increment Count was selected.");
                       SavedProducts savedProducts = new SavedProducts(count, currentProduct);
+                      context.read(cartProductsNotifier.notifier).changeProductCount(currentProduct);
                       //treeMap[currentProduct.id] = savedProducts;
                     },
                     decrementCountSelected: (count){
                       developer.log(currentScreen , name :"decrement Count was selected.");
+                      context.read(cartProductsNotifier.notifier).changeProductCount(currentProduct);
                     },
                     initialCount: productCount,
                   ),
