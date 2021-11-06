@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:math';
 
@@ -19,7 +20,9 @@ class ProductListingNotifierBloc extends StateNotifier<AsyncValue<List<Products>
   List<Products> get receivedProductsFromApi => receivedProducts;
 
   List<Products> cartProducts = [];
+  SplayTreeMap cartProductsMap = new SplayTreeMap<int, List<Products>>();
   List<Products> get getProductsFromCart => cartProducts;
+  SplayTreeMap get getProductsFromCartMap => cartProductsMap;
   ProductListingNotifierBloc() : super(AsyncData(null)){
     _streamController = new StreamController();
   }
@@ -86,6 +89,9 @@ class ProductListingNotifierBloc extends StateNotifier<AsyncValue<List<Products>
     developer.log(currentScreen, name : "Selected product id from server ${productId}");
     List<Products> products = receivedProducts.where((element) => element.id! == productId).toList();
     developer.log(currentScreen, name: "Reponse was successful with size ${products.length}");
+    for(var currentProduct in products){
+      developer.log(currentScreen,name : "Product name after fetch ${currentProduct.id}");
+    }
     state = AsyncData(products) ;
   }
 
@@ -108,7 +114,17 @@ class ProductListingNotifierBloc extends StateNotifier<AsyncValue<List<Products>
 
   void addProductToCart(Products products){
     cartProducts.add(products);
+    if(cartProductsMap.containsKey(products.id!)){
+      List<Products> currentProducts = cartProductsMap[products.id!];
+      currentProducts.add(products);
+      cartProductsMap[products.id!] = currentProducts;
+    }
+    else{
+      List<Products> currentProducts = [products];
+      cartProductsMap[products.id!] = currentProducts;
+    }
     developer.log(currentScreen , name : "Current product added to cart ${products.id}");
+
   }
 
   void getSavedProductsfromCart(){

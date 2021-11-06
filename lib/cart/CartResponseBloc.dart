@@ -6,8 +6,8 @@ import 'package:homebazaar/cart/CartResponse.dart';
 import 'package:homebazaar/cart/SavedProducts.dart';
 import 'dart:developer' as developer;
 
-class CartBloc extends StateNotifier<AsyncValue<CartResponse?>>{
-  CartBloc(AsyncValue<CartResponse?> state) : super(state);
+class CartResponseBloc extends StateNotifier<AsyncValue<CartResponse?>>{
+  CartResponseBloc(AsyncValue<CartResponse?> state) : super(state);
   String currentScreen = "CartBloc";
   void placeOrder(String userId, List<SavedProducts> productList){
     List<CartProducts> cartProductList = [];

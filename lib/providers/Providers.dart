@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:homebazaar/cart/CartProductsBloc.dart';
 import 'package:homebazaar/cart/SavedProducts.dart';
 import 'package:homebazaar/cart/SavedProductsBloc.dart';
 import 'package:homebazaar/components/QuantityBloc.dart';
@@ -17,6 +18,8 @@ final savedProductListProvider = StateNotifierProvider.autoDispose<SavedProducts
 });
 
 final counterProvider = ChangeNotifierProvider.autoDispose<QuantityBloc>((ref) => QuantityBloc());
+
+final cartProductsNotifier = ChangeNotifierProvider.autoDispose<CartProductsBloc>((ref) => CartProductsBloc());
 
 final authenticateProvider = StateNotifierProvider.autoDispose<UserAuthenticateBloc, AsyncValue<bool>>((ref) {
   return UserAuthenticateBloc();

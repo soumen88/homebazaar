@@ -28,8 +28,8 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
   String currentScreen = "CartProductScreenPage";
   int counter = 0;
   List<Products>? _products = [];
+  //List<Products>? _receivedProducts = [];
   SplayTreeMap treeMap = new SplayTreeMap<int, String>();
-  ScrollController _cartScrollController = new ScrollController();
   @override
   void initState() {
 
@@ -39,8 +39,8 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
     });
     SchedulerBinding.instance!.addPostFrameCallback((_) {
       developer.log(currentScreen , name: "SchedulerBinding");
-      context.read(productListProvider.notifier).getSavedProductsfromCart();
-
+      List<Products>? _receivedProducts = context.read(productListProvider.notifier).cartProducts;
+      context.read(cartProductsNotifier.notifier).addAllProducts(_receivedProducts);
     });
     super.initState();
   }
@@ -90,27 +90,13 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
           ],
         ),
         body: SingleChildScrollView(
-          controller: _cartScrollController,
           child: Center(
             child: Consumer(builder: (context,watch, child) {
-              final futureProducts = watch(productListProvider);
+              final futureProducts = watch(cartProductsNotifier).currentProductsInCart;
+              _products!.clear();
+              _products!.addAll(futureProducts);
               return Container(
-                child: futureProducts.when(
-                    data: (data) {
-                      _products!.clear();
-                      _products!.addAll(data!);
-                      //return Text("Found ${_products!.length} in the cart");
-                      return handleReponse(_products, context);
-                    },
-                    loading: () {
-                      return Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          child: Center(child: CircularProgressIndicator())
-                      );
-                    },
-                    error: (e, st) =>  Text("Something went wrong")
-                ),
+                child: handleReponse(_products, context),
               );
             },
             ),
