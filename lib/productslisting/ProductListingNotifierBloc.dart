@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homebazaar/chopper/ApiService.dart';
@@ -31,23 +32,30 @@ class ProductListingNotifierBloc extends StateNotifier<AsyncValue<List<Products>
 
   void getProductsFromServer() async{
     state = AsyncLoading();
-    final quoteService = ApiService.instance;
-    final response = await quoteService.getProducts();
-    String currentScreen = "ProductListingBloc";
-    List<Products> products = [];
-    if (response != null && response.isNotEmpty) {
-      // If the call to the server was successful (returns OK), parse the JSON.
-      developer.log(currentScreen, name: "Reponse was successful");
-      for(var singleProduct in response){
-        var current = Products.fromJson(singleProduct);
-        products.add(current);
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+      final quoteService = ApiService.instance;
+      final response = await quoteService.getProducts();
+      String currentScreen = "ProductListingBloc";
+      List<Products> products = [];
+      if (response != null && response.isNotEmpty) {
+        developer.log(currentScreen, name: "Reponse was successful");
+        for(var singleProduct in response){
+          var current = Products.fromJson(singleProduct);
+          products.add(current);
+        }
+        receivedProducts = products;
+        state = AsyncData(products) ;
       }
-      receivedProducts = products;
-      state = AsyncData(products) ;
+      else{
+        developer.log(currentScreen, name: "Reponse was not successful");
+      }
     }
-    else{
-      developer.log(currentScreen, name: "Reponse was not successful");
+    else if(connectivityResult == ConnectivityResult.none){
+      state = AsyncData(receivedProducts);
     }
+
+
   }
 
   void getSingleProductDetails(int productId) async{

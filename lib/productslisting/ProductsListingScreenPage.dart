@@ -138,6 +138,29 @@ class ProductListingState extends State<ProductsListingScreenPage>{
   }
 
   Widget handleReponse(List<Products>? list, BuildContext context){
+    if(list != null && list.isEmpty){
+      developer.log(currentScreen, name: "Found empty list");
+      return Container(
+        width: double.infinity,
+        height: MediaQuery.of(context).size.height,
+        color: Colors.orangeAccent,
+        alignment: Alignment.center,
+        child: Container(
+          width: 300,
+          height: 300,
+          child: Column(
+            children: [
+              Image.asset('assets/no_product_found.png'),
+              Text("Sorry, No Products Found" , style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white
+              ),)
+            ],
+          ),
+        ),
+      );
+    }
     return list == null ?
     Center(
       child: CircularProgressIndicator(),
