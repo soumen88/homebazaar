@@ -144,10 +144,12 @@ class CheckOutScreenPage extends ConsumerWidget {
                     child: cartResponse.when(
                         data: (data) {
                           if(data != null && data.idFirst!.isNotEmpty){
-                            //displayPopUp(context);
+                            displayPopUp(context);
+                            return Text("Order was succesfully placed");
                           }
-                          //return Text("Order was succesfully placed");
-                          return Text("Order was succesfully placed");
+                          else{
+                            return Text("Place Your Order Now");
+                          }
                         },
                         loading: () {
                           return Container(
@@ -192,22 +194,26 @@ class CheckOutScreenPage extends ConsumerWidget {
 
   Widget _buildCheckOutList(List<SavedProducts> productList){
     return ListView.builder(
+
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         scrollDirection: Axis.vertical,
         itemCount: productList.length,
         itemBuilder: (context, index){
             SavedProducts savedProducts = productList[index];
-            return ListTile(
-              title: Text(savedProducts.product.title!),
-              subtitle:getRow(),
+            return Card(
+              elevation: 4.0,
+              child: ListTile(
+                title: Text(savedProducts.product.title!),
+                subtitle:getRow(savedProducts),
+              ),
             );
         }
     );
   }
 
-  Widget getRow(){
-
+  Widget getRow(SavedProducts savedProducts){
+    double totalCost = savedProducts.product.price! * savedProducts.count!;
     return  Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -220,11 +226,11 @@ class CheckOutScreenPage extends ConsumerWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Guild",
+            Text("Quantity",
               style: TextStyle(
                 fontSize: 15.0,
               ),),
-            Text("FairyTail, Magnolia",
+            Text("${savedProducts.count}",
               style: TextStyle(
                 fontSize: 12.0,
                 color: Colors.grey[400],
@@ -232,30 +238,31 @@ class CheckOutScreenPage extends ConsumerWidget {
           ],
         ),
         SizedBox(width: 20.0,),
-        Text("Price Here")
+        Text("Price: ${savedProducts.count} x ${savedProducts.product.price!} = ${totalCost}"),
+        SizedBox(height: 10),
       ],
     );
   }
 
-  Alert displayPopUp(BuildContext context){
-    var alert = Alert(
-      context: context,
-      type: AlertType.success,
-      title: "Home Bazaar",
-      desc: "Your Order Was Successfully Placed",
-      buttons: [
-        DialogButton(
-          child: Text(
-            "Okay",
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
-          onPressed: () => Navigator.pop(context),
-          width: 120,
-        )
-      ],
-    );
-
-    return alert;
+  void displayPopUp(BuildContext context){
+    Future.delayed(Duration(milliseconds: 2000), () {
+      Alert(
+        context: context,
+        type: AlertType.success,
+        title: "Home Bazaar",
+        desc: "Your Order Was Successfully Placed",
+        buttons: [
+          DialogButton(
+            child: Text(
+              "Okay",
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            onPressed: () => Navigator.pop(context),
+            width: 120,
+          )
+        ],
+      ).show();
+    });
   }
 }
 
