@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homebazaar/cart/SavedProducts.dart';
 import 'package:homebazaar/providers/Providers.dart';
+import 'dart:developer' as developer;
 
 class CheckOutScreenPage extends ConsumerWidget {
+  String currentScreen = "CheckOutScreenPage";
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     final savedProducts = watch(cartProductsNotifier).savedProductsInCart;
@@ -106,19 +108,38 @@ class CheckOutScreenPage extends ConsumerWidget {
                 ),
               ),
               Expanded(
-                flex:5,
+                flex: 1,
+                child: Column(
+                  children: [
+                    Text("Total Bill"),
+                    Consumer(
+                        builder: (builder, watch , child){
+                          double totalCost = 0.0;
+                          for(SavedProducts current in savedProducts){
+                            totalCost = totalCost + current.product.price! * current.count!;
+                          }
+                          developer.log(currentScreen, name : "Found total cost $totalCost");
+
+                          return Text("Price : \$" +totalCost.toString());
+                        }
+                    )
+                  ],
+                ),
+              ),
+              Expanded(
+                flex:2,
                 child: Container(
                   color: Colors.grey[200],
                   child: Center(
                       child:Card(
-                          margin: EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
-                          child: Consumer(
-                              builder: (builder, watch , child){
-                                return Container(
-                                  child :_buildCheckOutList(savedProducts),
-                                );
-                              }
-                          ),
+                        //margin: EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
+                        child: Consumer(
+                            builder: (builder, watch , child){
+                              return Container(
+                                child :_buildCheckOutList(savedProducts),
+                              );
+                            }
+                        ),
                       )
                   ),
                 ),
@@ -132,25 +153,28 @@ class CheckOutScreenPage extends ConsumerWidget {
     );
   }
 
-  ListView _buildCheckOutList(List<SavedProducts> productList){
+  Widget _buildCheckOutList(List<SavedProducts> productList){
     return ListView.builder(
         shrinkWrap: true,
+        scrollDirection: Axis.vertical,
         itemCount: productList.length,
         itemBuilder: (context, index){
             SavedProducts savedProducts = productList[index];
             return ListTile(
               title: Text(savedProducts.product.title!),
+              subtitle:getRow(),
             );
         }
     );
   }
 
   Widget getRow(){
+
     return  Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Icon(
-          Icons.home,
+          Icons.description,
           color: Colors.blueAccent[400],
           size: 35,
         ),
@@ -168,8 +192,9 @@ class CheckOutScreenPage extends ConsumerWidget {
                 color: Colors.grey[400],
               ),)
           ],
-        )
-
+        ),
+        SizedBox(width: 20.0,),
+        Text("Price Here")
       ],
     );
   }

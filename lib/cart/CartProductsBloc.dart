@@ -41,4 +41,9 @@ class CartProductsBloc extends ChangeNotifier{
     }
     notifyListeners();
   }
+
+  void removeProductFromCart(Products savedProducts){
+    savedProductsInCart.removeWhere((element) => element.product.id! == savedProducts.id!);
+    notifyListeners();
+  }
 }

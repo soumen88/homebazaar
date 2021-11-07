@@ -67,11 +67,28 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
             ),
           ),
         ),
-        bottomNavigationBar: BuyButton(tap: ()  {
-          developer.log(currentScreen , name : "Buy button was tapped");
-          prepareCheckoutcart();
-        },
-        buttonText: "Buy Now",),
+        bottomNavigationBar: Visibility(
+          child: Consumer(
+            builder : (context , watch, child){
+              final futureProducts = watch(cartProductsNotifier).savedProductsInCart;
+              return Visibility(
+                  child: BuyButton(tap: ()  {
+                    developer.log(currentScreen , name : "Buy button was tapped");
+                    prepareCheckoutcart();
+                  },
+                    buttonText: "Buy Now",),
+                  maintainSize: true,
+                  maintainAnimation: true,
+                  maintainState: true,
+                  visible: (futureProducts.length > 0) ? true : false,
+              );
+            }
+          ),
+          maintainSize: true,
+          maintainAnimation: true,
+          maintainState: true,
+          visible: true,
+        ),
       ),
     );
   }
@@ -79,8 +96,25 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
 
   Widget handleReponse(List<SavedProducts>? list, BuildContext context){
     return (list == null) || list.isEmpty ?
-    Center(
-      child: Image.asset('assets/no_product_found.png'),
+    Container(
+      width: double.infinity,
+      height: MediaQuery.of(context).size.height,
+      color: Colors.orangeAccent,
+      alignment: Alignment.center,
+      child: Container(
+        width: 300,
+        height: 300,
+        child: Column(
+          children: [
+            Image.asset('assets/no_product_found.png'),
+            Text("Sorry, No Result Found" , style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.white
+            ),)
+          ],
+        ),
+      ),
     )
         :
     Column(
@@ -106,6 +140,7 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
     String count = "Available Pieces: " + currentProduct.rating!.count.toString();
     String cardUrl = currentProduct.image!;
     var supportingText = "Category: " + currentProduct.id!.toString();
+
     return Card(
         elevation: 4.0,
         child: Column(
@@ -114,7 +149,7 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
               title: Text(heading),
               trailing: InkWell(
                 onTap: (){
-                  displayAlert(productCount);
+                  displayAlert(currentProduct, productCount);
                 },
                 child: Icon(
                   Icons.delete,
@@ -176,7 +211,7 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
 
   }
 
-  void displayAlert(int count){
+  void displayAlert(Products product, int count){
     Alert(
       context: context,
       type: AlertType.warning,
@@ -188,7 +223,10 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
             "Okay",
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            context.read(cartProductsNotifier.notifier).removeProductFromCart(product);
+            Navigator.pop(context);
+          },
           color: Colors.redAccent
         ),
         DialogButton(
