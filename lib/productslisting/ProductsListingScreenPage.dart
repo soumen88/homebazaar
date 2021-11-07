@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homebazaar/AppConfig.dart';
 import 'package:homebazaar/components/NavBar.dart';
+import 'package:homebazaar/connectivity/ConnectivityStatusBar.dart';
 import 'package:homebazaar/productslisting/ProductListingNotifierBloc.dart';
 import 'package:homebazaar/productslisting/Products.dart';
 import 'package:homebazaar/providers/Providers.dart';
@@ -34,7 +35,7 @@ class ProductListingState extends State<ProductsListingScreenPage>{
     });
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       developer.log(currentScreen , name: "WidgetsBinding");
-
+      context.read(connectivityProvider.notifier).connectivityListener();
     });
     developer.log(currentScreen, name : "Adding scroll listener");
 
@@ -76,6 +77,7 @@ class ProductListingState extends State<ProductsListingScreenPage>{
                   );
                 },
               ),
+              ConnectivityStatusBar()
             ],
           ),
         ),
