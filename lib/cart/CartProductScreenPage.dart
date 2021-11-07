@@ -120,7 +120,6 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
         :
     Column(
       children: [
-        Text("Product Listing will be done here ${list.length} with counter ${counter}"),
         ListView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),

@@ -57,4 +57,14 @@ class CartProductsBloc extends ChangeNotifier{
     savedProductsInCart.removeWhere((element) => element.product.id! == savedProducts.id!);
     notifyListeners();
   }
+
+  void clearCart(){
+    savedProductsInCart.clear();
+    //notifyListeners();
+  }
+
+  void clearCartAndNotify(){
+
+    notifyListeners();
+  }
 }

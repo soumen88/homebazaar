@@ -1,7 +1,11 @@
+import 'dart:async';
+
+import 'package:auto_route/src/router/auto_router_x.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homebazaar/cart/SavedProducts.dart';
 import 'package:homebazaar/components/BuyButton.dart';
+import 'package:homebazaar/connectivity/ConnectivityStatusBar.dart';
 import 'package:homebazaar/providers/Providers.dart';
 import 'dart:developer' as developer;
 
@@ -9,6 +13,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 
 class CheckOutScreenPage extends ConsumerWidget {
   String currentScreen = "CheckOutScreenPage";
+  Timer? timer;
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     final savedProducts = watch(cartProductsNotifier).savedProductsInCart;
@@ -143,7 +148,7 @@ class CheckOutScreenPage extends ConsumerWidget {
                   return Container(
                     child: cartResponse.when(
                         data: (data) {
-                          if(data != null && data.idFirst!.isNotEmpty){
+                          if(data != null && data.idFirst!.isNotEmpty && savedProducts.length > 0){
                             displayPopUp(context);
                             return Text("Order was succesfully placed");
                           }
@@ -188,6 +193,28 @@ class CheckOutScreenPage extends ConsumerWidget {
           ],
         ),
 
+      ),
+      bottomNavigationBar: Consumer(
+        builder: (builder , watch, scope){
+          String currentScreen = "LoginScreenPage";
+          final futureProvider = watch(connectivityProvider);
+          bool isVisible = false;
+          if(futureProvider.data != null && futureProvider.data!.value != null && futureProvider.data!.value!.isTimerExpired != null){
+            isVisible = futureProvider.data!.value!.isTimerExpired!;
+          }
+          developer.log(currentScreen, name :"Is visible ${isVisible}");
+          return Visibility(
+            child: ConnectivityStatusBar(
+              animationFinished: (isInternetConnected){
+
+              },
+              animationStarted: (){
+
+              },
+            ),
+            visible: !isVisible,
+          );
+        },
       ),
     );
   }
@@ -245,7 +272,9 @@ class CheckOutScreenPage extends ConsumerWidget {
   }
 
   void displayPopUp(BuildContext context){
-    Future.delayed(Duration(milliseconds: 2000), () {
+    timer = Timer(Duration(seconds: 2), () {
+      timer!.cancel();
+
       Alert(
         context: context,
         type: AlertType.success,
@@ -257,7 +286,13 @@ class CheckOutScreenPage extends ConsumerWidget {
               "Okay",
               style: TextStyle(color: Colors.white, fontSize: 20),
             ),
-            onPressed: () => Navigator.pop(context),
+            onPressed: ()  {
+              Navigator.pop(context);
+              context.read(cartProductsNotifier.notifier).clearCart();
+              context.read(productListProvider.notifier).clearCart();
+              context.read(cartProductsNotifier.notifier).clearCartAndNotify();
+              context.router.popUntilRoot();
+            },
             width: 120,
           )
         ],

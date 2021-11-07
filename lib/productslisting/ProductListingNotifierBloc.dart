@@ -121,5 +121,9 @@ class ProductListingNotifierBloc extends StateNotifier<AsyncValue<List<Products>
     state = AsyncData(cartProducts);
     developer.log(currentScreen , name : "Current product added to cart ${cartProducts.length}");
   }
+
+  void clearCart(){
+    cartProducts.clear();
+  }
 }
 

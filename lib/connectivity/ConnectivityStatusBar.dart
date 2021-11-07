@@ -106,7 +106,7 @@ class ConnectivityStatusBarState extends State<ConnectivityStatusBar> with Ticke
   @override
   dispose() {
     if(animation != null){
-      animation!.dispose();
+      //animation!.dispose();
     }
 
     super.dispose();

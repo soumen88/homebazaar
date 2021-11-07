@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homebazaar/cart/Cart.dart';
 import 'package:homebazaar/cart/CartProducts.dart';
@@ -35,11 +36,20 @@ class CartResponseBloc extends StateNotifier<AsyncValue<CartResponse?>>{
     final quoteService = ApiService.instance;
     final response = await quoteService.placeOrder(cart);
     CartResponse? cartResponse;
-    if (response != null ) {
-      cartResponse = CartResponse.fromJson(response);
-      developer.log(currentScreen, name: "String ${cartResponse.userId} and ${cartResponse.idFirst}");
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+      if (response != null ) {
+        cartResponse = CartResponse.fromJson(response);
+        developer.log(currentScreen, name: "String ${cartResponse.userId} and ${cartResponse.idFirst}");
+        state = AsyncData(cartResponse);
+      }
+      else{
+        state = AsyncData(null);
+      }
 
     }
-    state = AsyncData(cartResponse);
+    else{
+      state = AsyncData(null);
+    }
   }
 }
