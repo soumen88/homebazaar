@@ -27,7 +27,7 @@ class ProductListingState extends State<ProductsListingScreenPage>{
   bool isScrollListnerAdded = false;
   bool isStatusBarDisplayed = true;
   Function()? listener;
-
+  List<Products> productlist = [];
   @override
   void initState() {
     SchedulerBinding.instance!.addPostFrameCallback((_) {
@@ -36,7 +36,7 @@ class ProductListingState extends State<ProductsListingScreenPage>{
     });
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       developer.log(currentScreen , name: "WidgetsBinding");
-      //context.read(connectivityProvider.notifier).connectivityListener();
+
     });
     developer.log(currentScreen, name : "Adding scroll listener");
 
@@ -69,6 +69,9 @@ class ProductListingState extends State<ProductsListingScreenPage>{
                   return Container(
                     child: futureProducts.when(
                         data: (data) {
+                          if(data != null){
+                            productlist = List.from(data);
+                          }
                           isApiCallinProgress = false;
                           return handleReponse(data, context);
                         },
@@ -106,8 +109,11 @@ class ProductListingState extends State<ProductsListingScreenPage>{
           developer.log(currentScreen, name :"Is visible ${isVisible}");
           return Visibility(
             child: ConnectivityStatusBar(
-              animationFinished: (){
-
+              animationFinished: (isInternetConnected){
+                if(isInternetConnected != null && isInternetConnected && productlist.isEmpty){
+                  developer.log(currentScreen, name : "Hitting server as we have no data");
+                  context.read(productListProvider.notifier).getProductsFromServer();
+                }
               },
               animationStarted: (){
 

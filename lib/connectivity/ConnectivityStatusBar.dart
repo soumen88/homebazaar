@@ -7,7 +7,7 @@ import 'dart:developer' as developer;
 
 class ConnectivityStatusBar extends StatefulWidget {
   final VoidCallback animationStarted;
-  final VoidCallback animationFinished;
+  final void Function(bool?)? animationFinished;
 
 
   ConnectivityStatusBar({
@@ -29,7 +29,7 @@ class ConnectivityStatusBarState extends State<ConnectivityStatusBar> with Ticke
   String currentScreen = "ConnectivityStatusBar";
   AnimationController? animation;
   Animation<double>? _fadeInFadeOut;
-
+  bool? isNetworkAvailable;
 
   @override
   void initState() {
@@ -49,8 +49,8 @@ class ConnectivityStatusBarState extends State<ConnectivityStatusBar> with Ticke
         return futureProvider.when(
             data: (data){
               if(data != null){
-                bool isNetworkAvailable = data.isInternetConnected!;
-                return displayBar(isNetworkAvailable, context);
+                isNetworkAvailable = data.isInternetConnected!;
+                return displayBar(isNetworkAvailable!, context);
               }
               else{
                 return Text("Data is null");
@@ -71,7 +71,7 @@ class ConnectivityStatusBarState extends State<ConnectivityStatusBar> with Ticke
 
     animation!.addStatusListener((status){
       if(status == AnimationStatus.completed){
-        widget.animationFinished();
+        widget.animationFinished!(isNetworkAvailable);
         context.read(connectivityProvider.notifier).startTimer();
       }
       else if(status == AnimationStatus.dismissed){
