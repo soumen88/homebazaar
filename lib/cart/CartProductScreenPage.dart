@@ -51,7 +51,8 @@ class _CartProductScreenPageState extends State<CartProductScreenPage> {
         onWillPop: _onWillPop,
         child: Scaffold(
         appBar: NavBar(
-          screenName: "Cart Products",
+            screenName: "Cart Products",
+            isCartRouteAllowed : false,
         ),
         body: SingleChildScrollView(
           child: Center(

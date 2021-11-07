@@ -56,7 +56,8 @@ class _SingleProductListingScreenState extends State<SingleProductScreenPage> {
 
       child: Scaffold(
         appBar: NavBar(
-          screenName: "Product Description",
+            screenName: "Product Description",
+            isCartRouteAllowed : true,
         ),
         body: SafeArea(
           child: SingleChildScrollView(
@@ -71,7 +72,7 @@ class _SingleProductListingScreenState extends State<SingleProductScreenPage> {
                       child: futureProducts.when(
                           data: (data) {
 
-                            List<SavedProducts> savedProductsList = savedProducts.where((element) => element.product.id! == data!.first.id!).toList();
+                            List<SavedProducts> savedProductsList = savedProducts.where((element) => element.product.id! == widget.displayProduct.id!).toList();
                             if(savedProductsList.isNotEmpty){
                               counter = savedProductsList.first.count!;
                             }
@@ -197,7 +198,7 @@ class _SingleProductListingScreenState extends State<SingleProductScreenPage> {
           margin: EdgeInsets.all(5),
           child: BuyButton(tap: ()  {
             developer.log(currentScreen , name : "Buy button was tapped");
-
+            context.router.push(CheckOutScreenRoute());
           },buttonText: "Buy Now",),
         ),
 

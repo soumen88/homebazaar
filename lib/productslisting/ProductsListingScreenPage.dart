@@ -48,7 +48,10 @@ class ProductListingState extends State<ProductsListingScreenPage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: NavBar(screenName: "Home Bazaar",),
+      appBar: NavBar(
+        screenName: "Home Bazaar",
+        isCartRouteAllowed: true,
+      ),
       body: SingleChildScrollView(
         controller:  _scrollController,
         child: Center(
@@ -245,12 +248,27 @@ class ProductListingState extends State<ProductsListingScreenPage>{
   }
 
   void handleFiltering(String value){
-    if(value == "1"){
-      context.read(productListProvider.notifier).orderDecending();
+    switch(value){
+      case "1" :{
+        context.read(productListProvider.notifier).orderDecending();
+      }
+      break;
+      case "2":{
+        context.read(productListProvider.notifier).orderAscending();
+      }
+      break;
+      case "3":{
+        context.read(productListProvider.notifier).sortAlphabetical();
+      }
+      break;
+      case "4":{
+        context.read(productListProvider.notifier).sortReverseAlphabetical();
+      }
+      break;
+      default:
+        break;
     }
-    else{
-      context.read(productListProvider.notifier).orderAscending();
-    }
+
   }
 
   void addScrollListener(){

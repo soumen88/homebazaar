@@ -50,41 +50,6 @@ class ProductListingNotifierBloc extends StateNotifier<AsyncValue<List<Products>
     }
   }
 
-  void doubleProducts(){
-    /*List<Habit> _habits = [...state];
-    final newHabit = Habit(title: title);
-    _habits.add(newHabit);
-    state = _habits ;*/
-
-    List<Products> doubleProducts = [];
-    doubleProducts.addAll(receivedProducts);
-    doubleProducts.addAll(receivedProducts);
-    developer.log(currentScreen, name : "Double product listing ${doubleProducts.length}");
-    state = AsyncData(doubleProducts);
-  }
-
-  void filterProducts() async{
-
-    String currentScreen = "ProductListingBloc";
-    List<Products> products = receivedProducts;
-    List<Products> filterdProducts = [];
-    for(var singleProduct in products){
-      if(singleProduct.id! < 3 ){
-        filterdProducts.add(singleProduct);
-      }
-
-    }
-    developer.log(currentScreen, name: "After filtering products size ${filterdProducts.length}");
-    state = AsyncData(filterdProducts) ;
-  }
-
-  void testingStreams(){
-    _streamController!.add("This a test data");
-    _streamController!.addError(new Exception('An exception'));
-    _streamController!.add("This a test data 2");
-    _streamController!.close(); //Streams must be closed when not needed
-  }
-
   void getSingleProductDetails(int productId) async{
     developer.log(currentScreen, name : "Selected product id from server ${productId}");
     List<Products> products = receivedProducts.where((element) => element.id! == productId).toList();
@@ -117,6 +82,18 @@ class ProductListingNotifierBloc extends StateNotifier<AsyncValue<List<Products>
     state = AsyncData(receivedProducts) ;
   }
 
+  void sortAlphabetical(){
+    state = AsyncLoading();
+    receivedProducts.sort((a,b) => a.title!.toLowerCase().compareTo(b.title!.toLowerCase()));
+    state = AsyncData(receivedProducts) ;
+  }
+
+  void sortReverseAlphabetical(){
+    state = AsyncLoading();
+    receivedProducts.sort((a,b) => b.title!.toLowerCase().compareTo(a.title!.toLowerCase()));
+    state = AsyncData(receivedProducts) ;
+  }
+
   void addProductToCart(Products products){
     cartProducts.add(products);
     if(cartProductsMap.containsKey(products.id!)){
@@ -136,12 +113,5 @@ class ProductListingNotifierBloc extends StateNotifier<AsyncValue<List<Products>
     state = AsyncData(cartProducts);
     developer.log(currentScreen , name : "Current product added to cart ${cartProducts.length}");
   }
-}
-
-Stream<double> getRandomValues() async* {
-  var random = Random(2);
-  await Future.delayed(Duration(seconds: 1));
-  yield random.nextDouble();
-
 }
 

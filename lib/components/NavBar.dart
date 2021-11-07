@@ -10,11 +10,12 @@ class NavBar extends ConsumerWidget implements PreferredSizeWidget {
   int counter = 0;
   String currentScreen  = "navBar";
   String? screenName;
-
+  bool? isCartRouteAllowed = true;
 
   NavBar({
     Key? key,
     @required this.screenName,
+    @required this.isCartRouteAllowed,
   }) : super(key: key);
 
   @override
@@ -35,25 +36,31 @@ class NavBar extends ConsumerWidget implements PreferredSizeWidget {
             child: Stack(
               alignment: Alignment.topCenter,
               children: <Widget>[
-                Icon(
-                  Icons.shopping_cart,
-                  size: 36.0,
+                Visibility(
+                  child: Icon(
+                    Icons.shopping_cart,
+                    size: 36.0,
+                  ),
+                  visible: isCartRouteAllowed!,
                 ),
                 if (counter > 0)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 2.0),
-                    child: CircleAvatar(
-                      radius: 8.0,
-                      backgroundColor: Colors.red,
-                      foregroundColor: Colors.white,
-                      child: Text(
-                        counter.toString(),
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12.0,
+                  Visibility(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 2.0),
+                      child: CircleAvatar(
+                        radius: 8.0,
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                        child: Text(
+                          counter.toString(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12.0,
+                          ),
                         ),
                       ),
                     ),
+                    visible: isCartRouteAllowed!,
                   ),
               ],
             ),
