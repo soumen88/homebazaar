@@ -36,8 +36,7 @@ class ProductListingState extends State<ProductsListingScreenPage>{
     });
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       developer.log(currentScreen , name: "WidgetsBinding");
-
-      context.read(connectivityProvider.notifier).connectivityListener();
+      //context.read(connectivityProvider.notifier).connectivityListener();
     });
     developer.log(currentScreen, name : "Adding scroll listener");
 
@@ -99,18 +98,22 @@ class ProductListingState extends State<ProductsListingScreenPage>{
         ),
       bottomNavigationBar: Consumer(
         builder: (builder , watch, scope){
-          final timerExpired = watch(durationProvider).data!.value;
+          final futureProvider = watch(connectivityProvider);
+          bool isVisible = false;
+          if(futureProvider.data != null && futureProvider.data!.value != null && futureProvider.data!.value!.isTimerExpired != null){
+            isVisible = futureProvider.data!.value!.isTimerExpired!;
+          }
+          developer.log(currentScreen, name :"Is visible ${isVisible}");
           return Visibility(
             child: ConnectivityStatusBar(
               animationFinished: (){
 
               },
               animationStarted: (){
-                developer.log(currentScreen, name : "Timer started");
-                //context.read(durationProvider.notifier).startTimer();
+
               },
             ),
-            visible: timerExpired,
+            visible: !isVisible,
           );
         },
       ),

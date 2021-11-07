@@ -5,6 +5,7 @@ import 'package:homebazaar/cart/CartResponseBloc.dart';
 import 'package:homebazaar/cart/SavedProducts.dart';
 import 'package:homebazaar/cart/SavedProductsBloc.dart';
 import 'package:homebazaar/components/QuantityBloc.dart';
+import 'package:homebazaar/connectivity/AppConnectivity.dart';
 import 'package:homebazaar/connectivity/ConnectivityDetectorBloc.dart';
 import 'package:homebazaar/login/UserAuthenticateBloc.dart';
 import 'package:homebazaar/productslisting/ProductListingNotifierBloc.dart';
@@ -31,7 +32,7 @@ final cartListProvider = StateNotifierProvider.autoDispose<CartResponseBloc, Asy
   return CartResponseBloc();
 });
 
-final connectivityProvider = StateNotifierProvider<ConnectivityDetectorBloc, AsyncValue<bool>>((ref) {
+final connectivityProvider = StateNotifierProvider<ConnectivityDetectorBloc, AsyncValue<AppConnectivity?>>((ref) {
   return ConnectivityDetectorBloc();
 });
 

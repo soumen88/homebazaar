@@ -33,16 +33,34 @@ class ConnectivityStatusBarState extends State<ConnectivityStatusBar> with Ticke
 
   @override
   void initState() {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      developer.log(currentScreen , name: "WidgetsBinding");
 
+      context.read(connectivityProvider.notifier).connectivityListener();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer(
       builder: (builder, watch, child){
-        final isNetworkAvailable = watch(connectivityProvider).data!.value;
+        final futureProvider = watch(connectivityProvider);
         //changeState();
-        return displayBar(isNetworkAvailable, context);
+        return futureProvider.when(
+            data: (data){
+              if(data != null){
+                bool isNetworkAvailable = data.isInternetConnected!;
+                return displayBar(isNetworkAvailable, context);
+              }
+              else{
+                return Text("Data is null");
+              }
+            },
+            loading: () {
+              return CircularProgressIndicator();
+            },
+            error: (e, st) =>  Text("Something went wrong")
+        );
       },
     );
   }
@@ -54,6 +72,7 @@ class ConnectivityStatusBarState extends State<ConnectivityStatusBar> with Ticke
     animation!.addStatusListener((status){
       if(status == AnimationStatus.completed){
         widget.animationFinished();
+        context.read(connectivityProvider.notifier).startTimer();
       }
       else if(status == AnimationStatus.dismissed){
         //animation!.forward();
