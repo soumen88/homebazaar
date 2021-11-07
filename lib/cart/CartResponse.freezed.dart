@@ -23,7 +23,7 @@ class _$CartResponseTearOff {
 
   _CartResponse call(
       {@JsonKey(name: "_id") required String? idFirst,
-      required String? id,
+      required int? id,
       required int? userId,
       required String? date,
       required List<dynamic>? products}) {
@@ -48,7 +48,7 @@ const $CartResponse = _$CartResponseTearOff();
 mixin _$CartResponse {
   @JsonKey(name: "_id")
   String? get idFirst => throw _privateConstructorUsedError;
-  String? get id => throw _privateConstructorUsedError;
+  int? get id => throw _privateConstructorUsedError;
   int? get userId => throw _privateConstructorUsedError;
   String? get date => throw _privateConstructorUsedError;
   List<dynamic>? get products => throw _privateConstructorUsedError;
@@ -66,7 +66,7 @@ abstract class $CartResponseCopyWith<$Res> {
       _$CartResponseCopyWithImpl<$Res>;
   $Res call(
       {@JsonKey(name: "_id") String? idFirst,
-      String? id,
+      int? id,
       int? userId,
       String? date,
       List<dynamic>? products});
@@ -96,7 +96,7 @@ class _$CartResponseCopyWithImpl<$Res> implements $CartResponseCopyWith<$Res> {
       id: id == freezed
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
       userId: userId == freezed
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
@@ -122,7 +122,7 @@ abstract class _$CartResponseCopyWith<$Res>
   @override
   $Res call(
       {@JsonKey(name: "_id") String? idFirst,
-      String? id,
+      int? id,
       int? userId,
       String? date,
       List<dynamic>? products});
@@ -154,7 +154,7 @@ class __$CartResponseCopyWithImpl<$Res> extends _$CartResponseCopyWithImpl<$Res>
       id: id == freezed
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
       userId: userId == freezed
           ? _value.userId
           : userId // ignore: cast_nullable_to_non_nullable
@@ -189,7 +189,7 @@ class _$_CartResponse implements _CartResponse {
   @JsonKey(name: "_id")
   final String? idFirst;
   @override
-  final String? id;
+  final int? id;
   @override
   final int? userId;
   @override
@@ -243,7 +243,7 @@ class _$_CartResponse implements _CartResponse {
 abstract class _CartResponse implements CartResponse {
   const factory _CartResponse(
       {@JsonKey(name: "_id") required String? idFirst,
-      required String? id,
+      required int? id,
       required int? userId,
       required String? date,
       required List<dynamic>? products}) = _$_CartResponse;
@@ -255,7 +255,7 @@ abstract class _CartResponse implements CartResponse {
   @JsonKey(name: "_id")
   String? get idFirst => throw _privateConstructorUsedError;
   @override
-  String? get id => throw _privateConstructorUsedError;
+  int? get id => throw _privateConstructorUsedError;
   @override
   int? get userId => throw _privateConstructorUsedError;
   @override

@@ -9,7 +9,7 @@ part of 'CartResponse.dart';
 _$_CartResponse _$$_CartResponseFromJson(Map<String, dynamic> json) =>
     _$_CartResponse(
       idFirst: json['_id'] as String?,
-      id: json['id'] as String?,
+      id: json['id'] as int?,
       userId: json['userId'] as int?,
       date: json['date'] as String?,
       products: json['products'] as List<dynamic>?,

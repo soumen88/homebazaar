@@ -9,7 +9,7 @@ abstract class CartResponse with _$CartResponse{
   const factory CartResponse({
     @JsonKey(name: "_id")
     required String? idFirst,
-    required String? id,
+    required int? id,
     required int? userId,
     required String? date,
     required List? products
