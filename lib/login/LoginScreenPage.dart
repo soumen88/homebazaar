@@ -6,6 +6,7 @@ import 'dart:developer' as developer;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homebazaar/AppConfig.dart';
 import 'package:homebazaar/components/BuyButton.dart';
+import 'package:homebazaar/connectivity/ConnectivityStatusBar.dart';
 import 'package:homebazaar/providers/Providers.dart';
 import 'package:homebazaar/routes/AppRouter.gr.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -68,6 +69,28 @@ class LoginScreenPage extends ConsumerWidget {
               ],
             ),
           ),
+        ),
+        bottomNavigationBar: Consumer(
+          builder: (builder , watch, scope){
+            String currentScreen = "LoginScreenPage";
+            final futureProvider = watch(connectivityProvider);
+            bool isVisible = false;
+            if(futureProvider.data != null && futureProvider.data!.value != null && futureProvider.data!.value!.isTimerExpired != null){
+              isVisible = futureProvider.data!.value!.isTimerExpired!;
+            }
+            developer.log(currentScreen, name :"Is visible ${isVisible}");
+            return Visibility(
+              child: ConnectivityStatusBar(
+                animationFinished: (isInternetConnected){
+
+                },
+                animationStarted: (){
+
+                },
+              ),
+              visible: !isVisible,
+            );
+          },
         ),
       ),
     );

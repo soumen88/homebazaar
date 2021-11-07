@@ -103,4 +103,12 @@ class ConnectivityStatusBarState extends State<ConnectivityStatusBar> with Ticke
         opacity: _fadeInFadeOut! ,
     );
   }
+  @override
+  dispose() {
+    if(animation != null){
+      animation!.dispose();
+    }
+
+    super.dispose();
+  }
 }

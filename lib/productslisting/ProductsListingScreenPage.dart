@@ -152,7 +152,6 @@ class ProductListingState extends State<ProductsListingScreenPage>{
             children: [
               Image.asset('assets/no_product_found.png'),
               Text("Sorry, No Products Found" , style: TextStyle(
-                  fontSize: 28,
                   fontWeight: FontWeight.bold,
                   color: Colors.white
               ),)

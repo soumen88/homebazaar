@@ -2,6 +2,7 @@ import 'package:auto_route/src/router/auto_router_x.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homebazaar/components/BuyButton.dart';
+import 'package:homebazaar/connectivity/ConnectivityStatusBar.dart';
 import 'package:homebazaar/providers/Providers.dart';
 import 'dart:developer' as developer;
 
@@ -11,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../AppConfig.dart';
 
 class RegistrationScreenPage extends ConsumerWidget {
+  String currentScreen = "RegistrationScreenPage";
   TextEditingController emailController = new TextEditingController();
   TextEditingController userNameController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
@@ -101,12 +103,33 @@ class RegistrationScreenPage extends ConsumerWidget {
             ),
           ),
         ),
+        bottomNavigationBar: Consumer(
+          builder: (builder , watch, scope){
+            final futureProvider = watch(connectivityProvider);
+            bool isVisible = false;
+            if(futureProvider.data != null && futureProvider.data!.value != null && futureProvider.data!.value!.isTimerExpired != null){
+              isVisible = futureProvider.data!.value!.isTimerExpired!;
+            }
+            developer.log(currentScreen, name :"Is visible ${isVisible}");
+            return Visibility(
+              child: ConnectivityStatusBar(
+                animationFinished: (isInternetConnected){
+
+                },
+                animationStarted: (){
+
+                },
+              ),
+              visible: !isVisible,
+            );
+          },
+        ),
       ),
     );
   }
 
   bool validate(BuildContext context){
-    String currentScreen = "RegistrationScreenPage";
+
     String emailEntered = emailController.text.toString();
     String usernameEntered = userNameController.text.toString();
     String passwordEntered = passwordController.text.toString();

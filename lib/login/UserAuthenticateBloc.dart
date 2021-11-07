@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:homebazaar/chopper/ApiService.dart';
 import 'package:homebazaar/login/Address.dart';
@@ -22,14 +23,20 @@ class UserAuthenticateBloc extends StateNotifier<AsyncValue<bool>>{
 
   void hitServerForRegistration(String email, String username, String password) async{
     state = AsyncLoading();
-    var geoLocation = GeoLocation(lat: "-37.3159", long: "81.1496");
-    var address = Address(city: "Test", street: "Some street", number: 3, zipcode: "12926-3874", geolocation: geoLocation);
-    var userdetails = UserDetails(firstname: "John", lastname: "Doe");
-    final quoteService = ApiService.instance;
-    var user = User(email: email, username: username, password: password, name: userdetails, address: address, phone: "1234567890"  );
-    final response = await quoteService.register(user);
-    if(response != null){
-      state = AsyncData(true);
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+      var geoLocation = GeoLocation(lat: "-37.3159", long: "81.1496");
+      var address = Address(city: "Test", street: "Some street", number: 3, zipcode: "12926-3874", geolocation: geoLocation);
+      var userdetails = UserDetails(firstname: "John", lastname: "Doe");
+      final quoteService = ApiService.instance;
+      var user = User(email: email, username: username, password: password, name: userdetails, address: address, phone: "1234567890"  );
+      final response = await quoteService.register(user);
+      if(response != null){
+        state = AsyncData(true);
+      }
+      else{
+        state = AsyncData(false);
+      }
     }
     else{
       state = AsyncData(false);
@@ -38,11 +45,17 @@ class UserAuthenticateBloc extends StateNotifier<AsyncValue<bool>>{
 
   void hitServerForLogin(String username, String password) async{
     state = AsyncLoading();
-    var loginModel = Login(username: username, password: password);
-    final quoteService = ApiService.instance;
-    final response = await quoteService.login(loginModel);
-    if(response != null){
-      state = AsyncData(true);
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+      var loginModel = Login(username: username, password: password);
+      final quoteService = ApiService.instance;
+      final response = await quoteService.login(loginModel);
+      if(response != null){
+        state = AsyncData(true);
+      }
+      else{
+        state = AsyncData(false);
+      }
     }
     else{
       state = AsyncData(false);
