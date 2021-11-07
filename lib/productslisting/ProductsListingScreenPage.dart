@@ -25,6 +25,7 @@ class ProductListingState extends State<ProductsListingScreenPage>{
   ScrollController? _scrollController;
   bool isApiCallinProgress = false;
   bool isScrollListnerAdded = false;
+  bool isStatusBarDisplayed = true;
   Function()? listener;
 
   @override
@@ -55,7 +56,13 @@ class ProductListingState extends State<ProductsListingScreenPage>{
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
+              ElevatedButton(onPressed: (){
+                context.read(durationProvider.notifier).startTimer();
+                /*setState(() {
+                  isStatusBarDisplayed = false;
 
+                });*/
+              }, child: Text("Test")),
               Consumer(
                 builder: (context, watch, child) {
                   final futureProducts = watch(productListProvider);
@@ -77,7 +84,6 @@ class ProductListingState extends State<ProductsListingScreenPage>{
                   );
                 },
               ),
-              ConnectivityStatusBar()
             ],
           ),
         ),
@@ -90,6 +96,23 @@ class ProductListingState extends State<ProductsListingScreenPage>{
               startProductFilteringScreen();
             }
         ),
+      bottomNavigationBar: Consumer(
+        builder: (builder , watch, scope){
+          final timerExpired = watch(durationProvider).data!.value;
+          return Visibility(
+            child: ConnectivityStatusBar(
+              animationFinished: (){
+
+              },
+              animationStarted: (){
+                developer.log(currentScreen, name : "Timer started");
+                //context.read(durationProvider.notifier).startTimer();
+              },
+            ),
+            visible: timerExpired,
+          );
+        },
+      ),
     );
   }
 

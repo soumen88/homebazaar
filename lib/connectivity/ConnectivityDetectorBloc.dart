@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'dart:developer' as developer;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:homebazaar/splashscreen/TimerDurationBloc.dart';
 
 
 class ConnectivityDetectorBloc extends StateNotifier<AsyncValue<bool>>{
@@ -12,14 +13,14 @@ class ConnectivityDetectorBloc extends StateNotifier<AsyncValue<bool>>{
   ConnectivityDetectorBloc() : super(AsyncData(false));
 
   String currentScreen = "ConnectivityDetectorBloc";
-  ConnectivityResult? _connectivityResult;
-  late StreamSubscription _connectivitySubscription;
+  bool stopBottomBar = false;
   void connectivityListener(){
     Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
       developer.log(currentScreen, name : 'Current connectivity status: $result');
       switch (result) {
         case ConnectivityResult.mobile:{
           state = AsyncData(true);
+
         }
          break;
         case ConnectivityResult.wifi:

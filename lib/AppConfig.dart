@@ -3,6 +3,7 @@ import 'dart:ui';
 class AppConfig{
   static String PRODUCT_LISTING = "Product listing";
   static int SPLASH_SCREEN_TIME = 1;
+  static int DURATION_TIMER = 5000;
   static String BASE_URL = "https://fakestoreapi.com";
   static String ADD_TO_CART = "Add to Cart";
   static String LEARN_MORE = "Learn More";

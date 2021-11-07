@@ -5,12 +5,11 @@ import 'package:homebazaar/cart/CartResponseBloc.dart';
 import 'package:homebazaar/cart/SavedProducts.dart';
 import 'package:homebazaar/cart/SavedProductsBloc.dart';
 import 'package:homebazaar/components/QuantityBloc.dart';
-import 'package:homebazaar/components/QuantityCounter.dart';
 import 'package:homebazaar/connectivity/ConnectivityDetectorBloc.dart';
 import 'package:homebazaar/login/UserAuthenticateBloc.dart';
 import 'package:homebazaar/productslisting/ProductListingNotifierBloc.dart';
 import 'package:homebazaar/productslisting/Products.dart';
-import 'package:homebazaar/singleproduct/SingleProductNotifierBloc.dart';
+import 'package:homebazaar/splashscreen/TimerDurationBloc.dart';
 
 final productListProvider = StateNotifierProvider<ProductListingNotifierBloc, AsyncValue<List<Products>?>>((ref) {
   return ProductListingNotifierBloc();
@@ -34,4 +33,9 @@ final cartListProvider = StateNotifierProvider.autoDispose<CartResponseBloc, Asy
 
 final connectivityProvider = StateNotifierProvider<ConnectivityDetectorBloc, AsyncValue<bool>>((ref) {
   return ConnectivityDetectorBloc();
+});
+
+
+final durationProvider = StateNotifierProvider<TimerDurationBloc, AsyncValue<bool>>((ref) {
+  return TimerDurationBloc();
 });
