@@ -36,6 +36,7 @@ class ProductListingState extends State<ProductsListingScreenPage>{
     });
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       developer.log(currentScreen , name: "WidgetsBinding");
+
       context.read(connectivityProvider.notifier).connectivityListener();
     });
     developer.log(currentScreen, name : "Adding scroll listener");

@@ -3,8 +3,12 @@ import 'dart:async';
 import 'package:auto_route/src/router/auto_router_x.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/src/provider.dart';
 import 'package:homebazaar/AppConfig.dart';
+import 'package:homebazaar/providers/Providers.dart';
 import 'package:homebazaar/routes/AppRouter.gr.dart';
+import 'dart:developer' as developer;
 
 class SplashScreenPage extends StatefulWidget {
   @override
@@ -12,37 +16,41 @@ class SplashScreenPage extends StatefulWidget {
     // TODO: implement createState
     return SplashScreenState();
   }
-
-
 }
-
 class SplashScreenState extends State<SplashScreenPage>{
 
+  String currentScreen = "SplashScreenState";
 
-  Timer? timer;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //appBar: AppBar(title: Text("Home Bazaar"),),
       body: Center(
         child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Container(
-                alignment: Alignment.center,
-                child: Container(
-                  width: 300.0,
-                  height: 500.0,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30.0),
-                      image: DecorationImage(
-                          image: AssetImage(
-                            "assets/homebazaar.jpg",
-                          ), fit: BoxFit.cover)
-                  ),
-                ),
-              )
-            ],
+          child: Consumer(
+            builder: (builder, watch, child){
+              final timerExpired = watch(durationProvider).data!.value;
+              if(timerExpired){
+                startLoginScreen();
+              }
+              return Column(
+                children: <Widget>[
+                  Container(
+                    alignment: Alignment.center,
+                    child: Container(
+                      width: 300.0,
+                      height: 500.0,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30.0),
+                          image: DecorationImage(
+                              image: AssetImage(
+                                "assets/homebazaar.jpg",
+                              ), fit: BoxFit.cover)
+                      ),
+                    ),
+                  )
+                ],
+              );
+            },
           ),
         ),
       ),
@@ -51,15 +59,15 @@ class SplashScreenState extends State<SplashScreenPage>{
 
   @override
   void initState() {
-    timer = Timer(
-        Duration(seconds: AppConfig.SPLASH_SCREEN_TIME),
-            () => startLoginScreen()
-            );
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      developer.log(currentScreen , name: "WidgetsBinding");
+      context.read(durationProvider.notifier).startTimer();
+    });
+
   }
 
   void startLoginScreen(){
-    timer?.cancel();
-    //context.router.replace(LoginScreenRoute());
+    context.router.replace(LoginScreenRoute());
     //context.router.navigate(ProductsListingScreenRoute());
   }
 }
