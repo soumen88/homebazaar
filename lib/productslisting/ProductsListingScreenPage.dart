@@ -56,13 +56,6 @@ class ProductListingState extends State<ProductsListingScreenPage>{
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              ElevatedButton(onPressed: (){
-                context.read(durationProvider.notifier).startTimer();
-                /*setState(() {
-                  isStatusBarDisplayed = false;
-
-                });*/
-              }, child: Text("Test")),
               Consumer(
                 builder: (context, watch, child) {
                   final futureProducts = watch(productListProvider);

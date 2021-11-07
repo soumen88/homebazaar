@@ -26,18 +26,29 @@ class CartProductsBloc extends ChangeNotifier{
 
   void changeProductCount(Products products, bool isAdded){
     int index = savedProductsInCart.indexWhere((element) => element.product.id == products.id);
-    if(index == -1){
-      //element not found
-      developer.log(currentScreen, name: "Element not found hence adding in list");
-      SavedProducts savedProducts = new SavedProducts(1, products);
-      savedProductsInCart.add(savedProducts);
+    if(isAdded){
+      if(index == -1){
+        //element not found
+        developer.log(currentScreen, name: "Element not found hence adding in list");
+        SavedProducts savedProducts = new SavedProducts(1, products);
+        savedProductsInCart.add(savedProducts);
+      }
+      else{
+        developer.log(currentScreen, name: "Element found at index $index in list");
+        SavedProducts savedProducts =  savedProductsInCart.elementAt(index);
+        savedProducts.count = savedProducts.count! + 1;
+        savedProductsInCart.removeAt(index);
+        savedProductsInCart.insert(index, savedProducts);
+      }
     }
     else{
-      developer.log(currentScreen, name: "Element found at index $index in list");
+      developer.log(currentScreen, name: "Element found at index $index for removal in list");
       SavedProducts savedProducts =  savedProductsInCart.elementAt(index);
-      savedProducts.count = savedProducts.count! + 1;
-      savedProductsInCart.removeAt(index);
-      savedProductsInCart.insert(index, savedProducts);
+      if(savedProducts.count! > 1){
+        savedProducts.count = savedProducts.count! - 1;
+        savedProductsInCart.removeAt(index);
+        savedProductsInCart.insert(index, savedProducts);
+      }
     }
     notifyListeners();
   }
