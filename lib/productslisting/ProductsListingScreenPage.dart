@@ -272,11 +272,11 @@ class ProductListingState extends State<ProductsListingScreenPage>{
   void handleFiltering(String value){
     switch(value){
       case "1" :{
-        context.read(productListProvider.notifier).orderDecending();
+        context.read(productListProvider.notifier).orderAscending();
       }
       break;
       case "2":{
-        context.read(productListProvider.notifier).orderAscending();
+        context.read(productListProvider.notifier).orderDecending();
       }
       break;
       case "3":{

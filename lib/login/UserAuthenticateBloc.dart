@@ -78,7 +78,7 @@ class UserAuthenticateBloc extends StateNotifier<AsyncValue<bool>>{
     bool hasDigits = password.contains(new RegExp(r'[0-9]'));
     bool hasLowercase = password.contains(new RegExp(r'[a-z]'));
     //bool hasSpecialCharacters = password.contains(new RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
-    bool hasMinLength = password.length > minLength;
+    bool hasMinLength = password.length >= minLength;
 
     return hasDigits & hasLowercase & hasMinLength;
   }

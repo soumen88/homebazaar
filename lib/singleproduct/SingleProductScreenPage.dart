@@ -71,12 +71,12 @@ class _SingleProductListingScreenState extends State<SingleProductScreenPage> {
                     return Container(
                       child: futureProducts.when(
                           data: (data) {
-
+                            int productCount = 0;
                             List<SavedProducts> savedProductsList = savedProducts.where((element) => element.product.id! == widget.displayProduct.id!).toList();
                             if(savedProductsList.isNotEmpty){
-                              counter = savedProductsList.first.count!;
+                              productCount = savedProductsList.first.count!;
                             }
-                            return handleReponse(data!.first, counter);
+                            return handleReponse(data!.first, productCount);
                           },
                           loading: () => CircularProgressIndicator(),
                           error: (e, st) =>  Text("Something went wrong")

@@ -134,7 +134,7 @@ class CheckOutScreenPage extends ConsumerWidget {
                             }
                             developer.log(currentScreen, name : "Found total cost $totalCost");
 
-                            return Text("Price : \$" +totalCost.toString());
+                            return Text("Price : \$" +totalCost.round().toString());
                           }
                       )
                     ],
@@ -244,12 +244,7 @@ class CheckOutScreenPage extends ConsumerWidget {
     return  Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Icon(
-          Icons.description,
-          color: Colors.blueAccent[400],
-          size: 35,
-        ),
-        SizedBox(width: 20.0,),
+        SizedBox(width: 10.0,),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -265,7 +260,7 @@ class CheckOutScreenPage extends ConsumerWidget {
           ],
         ),
         SizedBox(width: 20.0,),
-        Text("Price: ${savedProducts.count} x ${savedProducts.product.price!} = ${totalCost}"),
+        Text("Price: ${savedProducts.count} x ${savedProducts.product.price!} = ${totalCost.round()}"),
         SizedBox(height: 10),
       ],
     );
@@ -291,6 +286,7 @@ class CheckOutScreenPage extends ConsumerWidget {
               context.read(cartProductsNotifier.notifier).clearCart();
               context.read(productListProvider.notifier).clearCart();
               context.read(cartProductsNotifier.notifier).clearCartAndNotify();
+              context.read(productListProvider.notifier).loadPreviousProducts();
               context.router.popUntilRoot();
             },
             width: 120,
