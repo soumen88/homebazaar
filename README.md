@@ -1,16 +1,30 @@
-# homebazaar
+# Flutter Expertise
 
-A new Flutter project.
+Welcome to my GitHub repository where I showcase my expertise in Flutter!
 
-## Getting Started
+## About Me
 
-This project is a starting point for a Flutter application.
+I'm a passionate Flutter developer with years of experience building cross-platform mobile applications. I specialize in:
 
-A few resources to get you started if this is your first Flutter project:
+- Flutter App Development
+- UI/UX Design with Flutter
+- State Management
+- Flutter Testing
+- Providing Flutter Training
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## Training Services
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+I offer comprehensive Flutter training services, including:
+
+- Beginner to Advanced Flutter Courses
+- Hands-on Projects
+- Code Reviews and Feedback
+- Consultation Services
+
+If you're interested in learning Flutter or need Flutter-related assistance, feel free to [contact me](mailto:your.email@example.com).
+
+## Connect with Me
+
+Let's connect and collaborate:
+
+- [LinkedIn](https://www.linkedin.com/in/soumen-das-39565557/)
